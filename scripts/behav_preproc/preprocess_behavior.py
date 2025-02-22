@@ -3,6 +3,8 @@ import argparse
 import numpy as np
 import pandas as pd
 
+from tqdm import tqdm
+
 import sys
 
 def get_n_dir_up(path, n):
@@ -215,7 +217,7 @@ def preprocess_dataset(src_folder, des_folder):
         shutil.rmtree(des_folder)
     os.makedirs(des_folder)
     
-    for l in os.listdir(src_folder):
+    for l in tqdm(os.listdir(src_folder)):
         if l.endswith('.csv'):
             # only process files in csv format
             src_path = os.path.join(src_folder, l)

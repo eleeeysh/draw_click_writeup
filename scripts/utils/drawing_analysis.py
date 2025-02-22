@@ -1,7 +1,5 @@
 import numpy as np
 from itertools import chain
-from scipy.signal import gaussian
-from scipy.ndimage import convolve1d
 
 """ parse raw drawing data """
 

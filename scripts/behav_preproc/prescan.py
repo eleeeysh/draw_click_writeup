@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 import pickle
 
+from tqdm import tqdm
+
 import sys
 
 def get_n_dir_up(path, n):
@@ -118,7 +120,7 @@ def prescan_dataset(src_path, target_path, target_mouse_path):
     # copy the files satisfy the requirement to target folder
     min_kb = 60
     all_files = get_all_files(src_path)
-    for f in all_files:
+    for f in tqdm(all_files):
         # should be a csv file
         if not f.endswith('.csv'):
             continue

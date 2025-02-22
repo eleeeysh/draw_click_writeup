@@ -45,6 +45,8 @@ img {
 ### Primary results:
 Previous studies have demonstrated that rich information about memoranda can be decoded from gaze patterns. This includes not only memorized features @linde-domingo_geometry_2024 but also indicators of rehearsal @de_vries_microsaccades_2024 and mental imagery of actions @heremans_eyes_2008 @daquino_eye_2023 . In this study, we found that even when memory contents were controlled and response actions were equivalent, nuances in gaze patterns were evident depending on the planned action dynamics. Specifically, gaze patterns reflect whether people were planning to draw a line or to adjust the position of dots on a circle to report the memorized orientations. 
 
+- (Preliminary: show the heatmap of eye-gaze data under different conditions)
+
 #### Clicking Elicits More Coherent and Feature-Corresponding Gaze Patterns Than Drawing
 
 
@@ -83,5 +85,9 @@ When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaz
 - frequency change
 - development of repulsive biases
 - other factors controling the process
+
+## Supplementary
+
+### Individual differences
 
 ## References
