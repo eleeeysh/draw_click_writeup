@@ -100,6 +100,22 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 ##### MVPA result
 
+<figure style="text-align: center;">
+    <caption><strong>MVPA: compare draw & click</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>within subject (ISI)</figcaption>
+            <img src="../results/images/mvpa/within_isi_modes_err_distrib.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>across subject (ISI)</figcaption>
+            <img src="../results/images/mvpa/across_isi_modes_err_distrib.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
+
+(reason we are not during this for the delay: not enough data)
+
 ##### RSA result
 <figure style="text-align: center;">
     <caption><strong>RSA: compare draw & click</strong></caption>
@@ -155,6 +171,15 @@ Eye gaze patterns not only indicate certainty about action outcomes but may also
 
 ##### The gradual accumulation of serial biases
 - MVPA results
+<figure style="text-align: center;">
+    <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <img src="../results/images/mvpa/delay_serial_bias.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
+
 - Indirect RSA evidence
 <figure style="text-align: center;">
     <caption><strong>RSA: compare small, mid, large SD difference</strong></caption>
@@ -176,12 +201,43 @@ Eye gaze patterns not only indicate certainty about action outcomes but may also
 When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaze data procide a straightforward and relatively way to investigate such oscillatory process. The result suggests that even the memoranda are controlled, responsemodality will systematically affect the dynamics of this process
 
 ##### General Frequency Analysis Results
+
+<figure style="text-align: center;">
+    <caption><strong>Frequency analysis: compare draw v.s. click</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>draw</figcaption>
+            <img src="../results/images/oscillations/draw.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>click</figcaption>
+            <img src="../results/images/oscillations/click.png"  style="width: auto;">
+        </figure>
+    </div>
+</figure>
+
 ##### How the rivalry between concurrent memory morph over time
 - frequency change
 - development of repulsive biases
 - other factors controling the process
 
 ## Supplementary
+
+### The generalizability across subjects and phases
+
+<figure style="text-align: center;">
+    <caption><strong>correlation of acc</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>within v.s. across subjects</figcaption>
+            <img src="../results/images/mvpa/isi_err_scale_regression.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>across subject ISI v.s. delay</figcaption>
+            <img src="../results/images/mvpa/isi_delay_acc_regression.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
 
 ### Individual differences
 
