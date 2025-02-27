@@ -98,9 +98,24 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 #### Clicking Elicits More Coherent and Feature-Corresponding Gaze Patterns Than Drawing
 
-
 ##### MVPA result
+
 ##### RSA result
+<figure style="text-align: center;">
+    <caption><strong>RSA: compare draw & click</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>mean gaze location</figcaption>
+            <img src="../results/images/rsa/within_group/stim_mean location.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>angle distribution</figcaption>
+            <img src="../results/images/rsa/within_group/stim_angle distrib.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
 
 #### A Probable Trade-Off Between Motor Execution and VWM Content Layout Based on Action Demands
 
@@ -116,15 +131,46 @@ Eye gaze patterns not only indicate certainty about action outcomes but may also
 
 ##### Cued v.s. Uncued
 - RSA results
-- MVAP results
+<figure style="text-align: center;">
+    <caption><strong>RSA: compare certain v.s. uncertain</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>mean gaze location</figcaption>
+            <img src="../results/images/rsa/within_group/certainty_stim_mean location.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>angle distribution</figcaption>
+            <img src="../results/images/rsa/within_group/certainty_stim_angle distrib.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
+
+- MVPA results
 - relevance results
 ##### Same analysis for hand motions
 
 #### Gaze Tracks the Development of serial bias over the delay
 
 ##### The gradual accumulation of serial biases
-- MVAP results
+- MVPA results
 - Indirect RSA evidence
+<figure style="text-align: center;">
+    <caption><strong>RSA: compare small, mid, large SD difference</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>mean gaze location</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_mean location.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>angle distribution</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_angle distrib.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
 
 #### Gaze Provides a Measure for the Oscillatory Rehearsal of Multiple Items
 When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaze data procide a straightforward and relatively way to investigate such oscillatory process. The result suggests that even the memoranda are controlled, responsemodality will systematically affect the dynamics of this process
