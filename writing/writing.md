@@ -1,5 +1,7 @@
 ---
 bibliography: [references.bib]
+csl: apa.csl
+output: pdf
 ---
 
 <style>
@@ -23,26 +25,55 @@ img {
 
 <div class="img-container">
     <div>
-        <b>Click, Certain</b>
-        <img src="../results/images/exp_design/trial_type_0_click.png" width="200"><br>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>Click Certain</strong></figcaption>
+            <img src="../results/images/exp_design/trial_type_0_click.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>Draw Certain</strong></figcaption>
+            <img src="../results/images/exp_design/trial_type_0_draw.png" style="width: auto;">
+        </figure>
     </div>
     <div>
-        <b>Draw, Certain</b>
-        <img src="../results/images/exp_design/trial_type_0_draw.png" width="200"><br>
-    </div>
-    <div>
-        <b>Click, Uncertain</b>
-        <img src="../results/images/exp_design/trial_type_1_click.png" width="200"><br>
-    </div>
-    <div>
-        <b>Draw, Uncertain</b>
-        <img src="../results/images/exp_design/trial_type_1_draw.png" width="200"><br>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>Click Uncertain</strong></figcaption>
+            <img src="../results/images/exp_design/trial_type_1_click.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>Draw Uncertain</strong></figcaption>
+            <img src="../results/images/exp_design/trial_type_1_draw.png" style="width: auto;">
+        </figure>
     </div>
 </div>
 
 
 ## Results
 ### Primary results:
+
+#### Behavioral data
+
+<span style="color:pink"> *TODO*</span>: compare how click and draw differ: clicking is general less biased but drawing is more stable.
+
+<span style="color:pink"> *TODO*</span>: firstly, memoranda is decodeable from eye-gaze, regardless of modes. (Show that the accuracy is above chance-level)
+
+Note that the pattern is (1) generalizable across subjects
+(2) generalizable across phases.
+
+<figure style="text-align: center;">
+    <caption><strong>correlation of acc</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption>within v.s. across subjects</figcaption>
+            <img src="../results/images/mvpa/isi_err_scale_regression.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption>across subject ISI v.s. delay</figcaption>
+            <img src="../results/images/mvpa/isi_delay_acc_regression.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
+
+
 Previous studies have demonstrated that rich information about memoranda can be decoded from gaze patterns. This includes not only memorized features @linde-domingo_geometry_2024 but also indicators of rehearsal @de_vries_microsaccades_2024 and mental imagery of actions @heremans_eyes_2008 @daquino_eye_2023 . In this study, we found that even when memory contents were controlled and response actions were equivalent, nuances in gaze patterns were evident depending on the planned action dynamics. Specifically, gaze patterns reflect whether people were planning to draw a line or to adjust the position of dots on a circle to report the memorized orientations. 
 
 - (Preliminary: show the heatmap of eye-gaze data under different conditions)
@@ -100,6 +131,8 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 ##### MVPA result
 
+<span style="color:pink"> *TODO*</span> show the distributon of **signed** errors. Also consider putting distribution in one so it will be easier to interpret.
+
 <figure style="text-align: center;">
     <caption><strong>MVPA: compare draw & click</strong></caption>
     <div style="display: flex; align-items: center; justify-content: center;">
@@ -115,6 +148,11 @@ Previous studies have demonstrated that rich information about memoranda can be 
 </figure>
 
 (reason we are not during this for the delay: not enough data)
+
+- <span style="color:pink"> *TODO*</span> more important, apply the same analysis to delay
+    - use 'held-one-out' to decode delay
+    - consider using cvMANOVA [@christophelCorticalSpecializationAttended2018]
+
 
 ##### RSA result
 <figure style="text-align: center;">
@@ -135,12 +173,57 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 #### A Probable Trade-Off Between Motor Execution and VWM Content Layout Based on Action Demands
 
+<span style="color:pink"> *TODO*</span> First of all, memoranda is also decodable from hand motions.
+
+<span style="color:pink"> *TODO*</span> Put the comparable hand and eye analysis side by side
+
 ##### Hand motion relevance analysis
 ##### (TBD) regression between hand motion and gaze accuracy
-- subject wise
+- subject wise (<span style="color:pink"> *TODO*</span> both MVPA and RSA results)
 - trial wise
 
 ### Beyond Primary Findings: Additional Insights from Gaze Patterns
+
+#### Gaze Tracks the Development of serial bias over the delay
+
+- <span style="color:pink"> *TODO*</span>: firstly, show there are biases
+- <span style="color:pink"> *TODO*</span> then discuss the 'development'
+
+##### The gradual accumulation of serial biases
+- MVPA results
+<figure style="text-align: center;">
+    <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <img src="../results/images/mvpa/delay_serial_bias.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
+    - two items: they probably yield greater bias, but more complex
+    - moving window: window size should be larger than the step size
+
+- Indirect RSA evidence
+
+<span style="color:pink"> *TODO*</span>: double check the correct way of dividing groups...
+
+<figure style="text-align: center;">
+    <caption><strong>RSA: compare small, mid, large SD difference</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>mean gaze location</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_mean location.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>angle distribution</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_angle distrib.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
+
+- <span style="color:pink"> *TODO*</span>: also see if there are correlations between SD magnitude and gaze
+    - example: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude?
 
 #### Gaze Patterns Reflect Certainty and Effort in Action Rehearsal
 Eye gaze patterns not only indicate certainty about action outcomes but may also reflect the effort invested in rehearsal, suggesting that people adjust rehearsal intensity based on action certainty and the varying costs of rehearsal across response modalities.
@@ -167,36 +250,6 @@ Eye gaze patterns not only indicate certainty about action outcomes but may also
 - relevance results
 ##### Same analysis for hand motions
 
-#### Gaze Tracks the Development of serial bias over the delay
-
-##### The gradual accumulation of serial biases
-- MVPA results
-<figure style="text-align: center;">
-    <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <img src="../results/images/mvpa/delay_serial_bias.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
-
-- Indirect RSA evidence
-<figure style="text-align: center;">
-    <caption><strong>RSA: compare small, mid, large SD difference</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>mean gaze location</figcaption>
-            <img src="../results/images/rsa/within_group/sd_stim_mean location.png" style="width: auto;">
-        </figure>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>angle distribution</figcaption>
-            <img src="../results/images/rsa/within_group/sd_stim_angle distrib.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
-
 #### Gaze Provides a Measure for the Oscillatory Rehearsal of Multiple Items
 When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaze data procide a straightforward and relatively way to investigate such oscillatory process. The result suggests that even the memoranda are controlled, responsemodality will systematically affect the dynamics of this process
 
@@ -222,22 +275,6 @@ When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaz
 - other factors controling the process
 
 ## Supplementary
-
-### The generalizability across subjects and phases
-
-<figure style="text-align: center;">
-    <caption><strong>correlation of acc</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>within v.s. across subjects</figcaption>
-            <img src="../results/images/mvpa/isi_err_scale_regression.png" style="width: auto;">
-        </figure>
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>across subject ISI v.s. delay</figcaption>
-            <img src="../results/images/mvpa/isi_delay_acc_regression.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
 
 ### Individual differences
 
