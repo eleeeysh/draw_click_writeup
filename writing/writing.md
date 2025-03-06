@@ -131,7 +131,7 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 ##### MVPA result
 
-<span style="color:pink"> *TODO*</span> show the distributon of **signed** errors. Also consider putting distribution in one so it will be easier to interpret.
+~~<span style="color:pink"> *TODO*</span> show the distributon of **signed** errors. Also consider putting distribution in one so it will be easier to interpret.~~
 
 <figure style="text-align: center;">
     <caption><strong>MVPA: compare draw & click</strong></caption>
@@ -145,12 +145,16 @@ Previous studies have demonstrated that rich information about memoranda can be 
             <img src="../results/images/mvpa/across_isi_modes_err_distrib.png" style="width: auto;">
         </figure>
     </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>across subject (delay)</figcaption>
+            <img src="../results/images/mvpa/across_delay_modes_err_distrib.png" style="width: auto;">
+        </figure>
+    </div>
 </figure>
 
-(reason we are not during this for the delay: not enough data)
-
 - <span style="color:pink"> *TODO*</span> more important, apply the same analysis to delay
-    - use 'held-one-out' to decode delay
+    - ~~use 'held-one-out' to decode delay~~
     - consider using cvMANOVA [@christophelCorticalSpecializationAttended2018]
 
 
@@ -204,20 +208,28 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 - Indirect RSA evidence
 
-<span style="color:pink"> *TODO*</span>: double check the correct way of dividing groups...
+~~<span style="color:pink"> *TODO*</span>: double check the correct way of dividing groups...~~
 
 <figure style="text-align: center;">
     <caption><strong>RSA: compare small, mid, large SD difference</strong></caption>
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
-            <figcaption>mean gaze location</figcaption>
-            <img src="../results/images/rsa/within_group/sd_stim_mean location.png" style="width: auto;">
+            <figcaption>stim 1: mean gaze location</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_stim 1_mean location.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>stim 1: angle distrib</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_stim 1_angle distrib.png" style="width: auto;">
         </figure>
     </div>
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
-            <figcaption>angle distribution</figcaption>
-            <img src="../results/images/rsa/within_group/sd_stim_angle distrib.png" style="width: auto;">
+            <figcaption>stim 2: mean gaze location</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_stim 2_mean location.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>stim 2: angle distrib</figcaption>
+            <img src="../results/images/rsa/within_group/sd_stim_stim 2_angle distrib.png" style="width: auto;">
         </figure>
     </div>
 </figure>
@@ -268,6 +280,8 @@ When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaz
         </figure>
     </div>
 </figure>
+
+- <span style="color:pink"> *TODO*</span>: what are those clusters: within or across subjects?
 
 ##### How the rivalry between concurrent memory morph over time
 - frequency change
