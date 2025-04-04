@@ -155,7 +155,17 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 - <span style="color:pink"> *TODO*</span> more important, apply the same analysis to delay
     - ~~use 'held-one-out' to decode delay~~
-    - consider using cvMANOVA [@christophelCorticalSpecializationAttended2018]
+    - ~~consider using cvMANOVA [@christophelCorticalSpecializationAttended2018]~~
+
+<figure style="text-align: center;">
+    <caption><strong>RSA: compare draw & click</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>Decoding Accuracy and Clockwise bias</figcaption>
+            <img src="../results/images/mvpa2/delay_decoded_cross_modes_acc.png" style="width: auto;">
+        </figure>
+    </div>
+</figure>
 
 
 ##### RSA result
@@ -195,16 +205,31 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 ##### The gradual accumulation of serial biases
 - MVPA results
-<figure style="text-align: center;">
+    - two items
+    - window-size = 1.5s, step-size = 0.75s
+    - train or test within the same window or across
+    - using method similar to [@fischerDirectNeuralSignature2024]
+    <figure style="text-align: center;">
     <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
-            <img src="../results/images/mvpa/delay_serial_bias.png" style="width: auto;">
+            <img src="../results/images/mvpa2/delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
+            <figcaption>Left: within same epoch; Right: Train at t, test at t+1</figcaption>
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <img src="../results/images/mvpa2/draw_delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <img src="../results/images/mvpa2/click_delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
         </figure>
     </div>
 </figure>
-    - two items: they probably yield greater bias, but more complex
-    - moving window: window size should be larger than the step size
+
+
 
 - Indirect RSA evidence
 
