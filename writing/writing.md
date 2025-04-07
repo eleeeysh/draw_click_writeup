@@ -103,7 +103,7 @@ Previous studies have demonstrated that rich information about memoranda can be 
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
             <figcaption>delay</figcaption>
-            <img src="../results/images/gaze_features/delay_1d.png" style="width: auto;">
+            <img src="../results/images/gaze_features/delay_1d_only1.png" style="width: auto;">
         </figure>
     </div>
     <figcaption style="margin-top: 10px;">Average distribution of off-angle of gaze during ISI/delay, as a function of stimuli. Red for above the baseline, blue for the below</figcaption>
@@ -120,7 +120,7 @@ Previous studies have demonstrated that rich information about memoranda can be 
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
             <figcaption>delay</figcaption>
-            <img src="../results/images/gaze_features/delay_2d.png" style="width: auto;">
+            <img src="../results/images/gaze_features/delay_2d_only1.png" style="width: auto;">
         </figure>
     </div>
     <figcaption style="margin-top: 10px;">Average 2D heatmap of distribution of gaze during ISI/delay, as a function of stimuli.</figcaption>
@@ -129,6 +129,77 @@ Previous studies have demonstrated that rich information about memoranda can be 
 
 #### Clicking Elicits More Coherent and Feature-Corresponding Gaze Patterns Than Drawing
 
+##### Behavioral results:
+
+
+##### Gaze patterns: compare the gaze distribution from drawing and clicking
+For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns in clicking than in drawing --> drawing tend to 'group' similar actions?
+<figure style="text-align: center;">
+    <caption><strong>Pixel-wise normalized Heatmap of Gaze</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>From clicking</figcaption>
+            <img src="../results/images/gaze_features/click_delay_2d_only1_combined.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>From drawing</figcaption>
+            <img src="../results/images/gaze_features/draw_delay_2d_only1_combined.png" style="width: auto;">
+        </figure>
+    </div>
+    <figcaption style="margin-top: 10px;">Average 2D heatmap of distribution of gaze during the delay, as a function of stimuli.</figcaption>
+</figure>
+
+##### Further analysis of the gaze patterns
+- Inverted Encoding: 
+    - The predicted distribution of gaze (compared with the actual 2d heatmaps shown above)
+    <figure style="text-align: center;">
+        <caption><strong>Pixel-wise normalized Heatmap of Gaze</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>Actual</figcaption>
+                <img src="../results/images/gaze_features/delay_2d_only1_combined.png" style="width: auto;">
+            </figure>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>Reconstructed</figcaption>
+                <img src="../results/images/mvpa2/delay_phase_pattern_2d.png" style="width: auto;">
+            </figure>
+        </div>
+        <figcaption style="margin-top: 10px;">Average 2D heatmap of distribution of gaze during the delay, as a function of stimuli.</figcaption>
+    </figure>
+
+    - drawing yield worse accuracy compared to clicking
+    <figure style="text-align: center;">
+        <caption><strong>Inverted Decoding: compare draw & click</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>Decoding Accuracy and Clockwise bias</figcaption>
+                <img src="../results/images/mvpa2/delay_decoded_cross_modes_acc.png" style="width: auto;">
+            </figure>
+        </div>
+    </figure>
+- RSA results: drawing yields smaller correlation scores
+    <figure style="text-align: center;">
+        <caption><strong>RSA: compare draw & click</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>mean gaze location</figcaption>
+                <img src="../results/images/rsa/within_group/stim_mean location.png" style="width: auto;">
+            </figure>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>angle distribution</figcaption>
+                <img src="../results/images/rsa/within_group/stim_angle distrib.png" style="width: auto;">
+            </figure>
+        </div>
+    </figure>
+
+
+<!--
 ##### MVPA result
 
 ~~<span style="color:pink"> *TODO*</span> show the distributon of **signed** errors. Also consider putting distribution in one so it will be easier to interpret.~~
@@ -152,38 +223,7 @@ Previous studies have demonstrated that rich information about memoranda can be 
         </figure>
     </div>
 </figure>
-
-- <span style="color:pink"> *TODO*</span> more important, apply the same analysis to delay
-    - ~~use 'held-one-out' to decode delay~~
-    - ~~consider using cvMANOVA [@christophelCorticalSpecializationAttended2018]~~
-
-<figure style="text-align: center;">
-    <caption><strong>RSA: compare draw & click</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>Decoding Accuracy and Clockwise bias</figcaption>
-            <img src="../results/images/mvpa2/delay_decoded_cross_modes_acc.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
-
-
-##### RSA result
-<figure style="text-align: center;">
-    <caption><strong>RSA: compare draw & click</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>mean gaze location</figcaption>
-            <img src="../results/images/rsa/within_group/stim_mean location.png" style="width: auto;">
-        </figure>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <figcaption>angle distribution</figcaption>
-            <img src="../results/images/rsa/within_group/stim_angle distrib.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
+-->
 
 #### A Probable Trade-Off Between Motor Execution and VWM Content Layout Based on Action Demands
 
