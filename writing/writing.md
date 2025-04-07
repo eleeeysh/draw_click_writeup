@@ -177,10 +177,11 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
         <div style="display: flex; align-items: center; justify-content: center;">
             <figure style="margin: 10px; text-align: center;">
                 <figcaption>Decoding Accuracy and Clockwise bias</figcaption>
-                <img src="../results/images/mvpa2/delay_decoded_cross_modes_acc.png" style="width: auto;">
+                <img src="../results/images/mvpa2/single_or_both_delay_decoded_cross_modes_acc.png" style="width: auto;">
             </figure>
         </div>
     </figure>
+
 - RSA results: drawing yields smaller correlation scores
     <figure style="text-align: center;">
         <caption><strong>RSA: compare draw & click</strong></caption>
