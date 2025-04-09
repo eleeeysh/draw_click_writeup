@@ -199,6 +199,36 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
         </div>
     </figure>
 
+- Question: why they have different decoding accuracy?
+    - Firstly, we investigate how the generalizability across modes evolves throughout the delay
+    
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>decoding accuracy</strong></figcaption>
+            <img src="../results/images/mvpa2/cross_mode_delay_decoded_multi_phases_acc_stats.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>decoding bias</strong></figcaption>
+            <img src="../results/images/mvpa2/cross_mode_delay_decoded_multi_phases_acc_bias_stats.png" style="width: auto;">
+        </figure>
+    </div>
+
+    - Next, are memory for two modes represented in a relative stable manner, or evolve throughout the delay? We check the decoding accuracy across phase (i.e. trained on an earlier phase, tested on a later phase)
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>Draw</strong></figcaption>
+            <img src="../results/images/mvpa2/draw_cross_phase_evolve.png" style="width: auto;">
+        </figure>
+        <figure style="margin: 8px; text-align: center;">
+            <figcaption><strong>Click</strong></figcaption>
+            <img src="../results/images/mvpa2/click_cross_phase_evolve.png" style="width: auto;">
+        </figure>
+    </div>
+
+    - Discussion: overall, it seems when the mode is 'drawing', the representation 'changes' more (or go through more processing) over time. this aligns with the survey result from our preliminary study.
+
+        - preliminary study survey:
+        - survey for the current study:
 
 <!--
 ##### MVPA result
