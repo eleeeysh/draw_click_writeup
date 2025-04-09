@@ -290,11 +290,13 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
     </div>
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
+        <figcaption>Draw</figcaption>
             <img src="../results/images/mvpa2/draw_delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
         </figure>
     </div>
     <div style="display: flex; align-items: center; justify-content: center;">
         <figure style="margin: 10px; text-align: center;">
+        <figcaption>Click</figcaption>
             <img src="../results/images/mvpa2/click_delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
         </figure>
     </div>
@@ -332,6 +334,32 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
 
 - <span style="color:pink"> *TODO*</span>: also see if there are correlations between SD magnitude and gaze
     - example: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude?
+
+- Note that not all behavior biases manifests in gaze data
+    - surrounding bias: the difficulty of measuring it in inverted encoding results...
+    - cardinal/oblique bias: 
+        <figure style="text-align: center;">
+            <caption><strong>Cardinal / Oblique bias</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Bheavior</figcaption>
+                    <img src="../results/images/behavior/cardinal_oblique_all.png" style="width: auto;">
+                </figure>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Gaze (ISI) </figcaption>
+                    <img src="../results/images/mvpa2/isi_delay_decoded_tuning_func.png" style="width: auto;">
+                </figure>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Gaze (delay) </figcaption>
+                    <img src="../results/images/mvpa2/all_delay_decoded_tuning_func.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+        *comments*: while there are still some correspondence, for example worse accuracy around the cardinal orientations, in gaze pattern we do not see the bias curves observed in behaviors. Maybe it is because eye-gaze itself has its own intrinsic bias?
 
 #### Gaze Patterns Reflect Certainty and Effort in Action Rehearsal
 Eye gaze patterns not only indicate certainty about action outcomes but may also reflect the effort invested in rehearsal, suggesting that people adjust rehearsal intensity based on action certainty and the varying costs of rehearsal across response modalities.
