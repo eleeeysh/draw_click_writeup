@@ -332,6 +332,31 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
     </div>
 </figure>
 
+- similarly we see in inverted encoding results:
+
+    <table>
+    <tr>
+        <th></th>
+        <th>Accuracy (Stim 1)</th>
+        <th>Accuracy (Stim 2)</th>
+    </tr>
+    <tr>
+        <td>small SD diff</td>
+        <td>0.870 &plusmn 0.117</td>
+        <td>0.555 &plusmn 0.161</td>
+    </tr>
+    <tr>
+        <td>medium SD diff</td>
+        <td>0.461 &plusmn 0.159</td>
+        <td>0.361 &plusmn 0.124</td>
+    </tr>
+        <tr>
+        <td>large SD diff</td>
+        <td>0.537 &plusmn 0.140</td>
+        <td>0.304 &plusmn 0.161</td>
+    </tr>
+    </table>
+
 - <span style="color:pink"> *TODO*</span>: also see if there are correlations between SD magnitude and gaze
     - example: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude?
 
