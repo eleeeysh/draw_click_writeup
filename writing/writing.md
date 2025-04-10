@@ -357,8 +357,53 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
     </tr>
     </table>
 
-- <span style="color:pink"> *TODO*</span>: also see if there are correlations between SD magnitude and gaze
-    - example: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude?
+- also see if there are correlations between SD magnitude and gaze
+    - Question: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude? <span style="color:pink"> *TODO*</span>
+    - Question: do subject of larger SD decoded from gaze has larger behavior SD?
+        <figure style="text-align: center;">
+            <caption><strong>Behavior SD v.s. Gaze SD</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Draw</figcaption>
+                    <img src="../results/images/behavior/reg_draw_last_phase_avg_sd.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Click</figcaption>
+                    <img src="../results/images/behavior/reg_click_last_phase_avg_sd.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+    - Question: do SD in behavior has anything to do with performance?
+        <figure style="text-align: center;">
+            <caption><strong>Behavior SD v.s. Bheavior Accuracy</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Draw</figcaption>
+                    <img src="../results/images/behavior/reg_draw_behav_acc_sd.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Click</figcaption>
+                    <img src="../results/images/behavior/reg_click_behav_acc_sd.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+        (left p-val: 0.0198)
+    - Question: therefore, do SD in gaze has anything to do with performance?
+        <figure style="text-align: center;">
+            <caption><strong>Gaze Serial Bias v.s. Bheavior Accuracy</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Draw</figcaption>
+                    <img src="../results/images/behavior/reg_behav_acc_draw_gaze_sd.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Click</figcaption>
+                    <img src="../results/images/behavior/reg_behav_acc_click_gaze_sd.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+        (left p-val: 0.0090)
+    
 
 - Note that not all behavior biases manifests in gaze data
     - surrounding bias: the difficulty of measuring it in inverted encoding results...
