@@ -474,7 +474,9 @@ When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaz
         </figure>
     </div>
 </figure>
-
+- comments:
+    - Clicking rehearsal seems are repeated at a around 0.4-0.8 frequency; for drawing the frequency is much smaller (which means it takes longer time in the drawing case to switch from one item to another)
+    - Interestingly it seems for drawing the rehearsal starts with item 2 first, then people will go back to rehearsal item 1; for clicking maybe because the frequency is much higher there is no clear evidence that any one of the item will be practiced first.
 - <span style="color:pink"> *TODO*</span>: what are those clusters: within or across subjects?
 
 ##### How the rivalry between concurrent memory morph over time
