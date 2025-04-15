@@ -48,30 +48,245 @@ img {
 
 
 ## Results
-### Primary results:
+
+### 
+The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there exists a shared pattern across subjects.
+
+- Gaze pattern during encoding is feature-specific -- after the cue onset. 
+    - Tested within subject
+        <figure style="text-align: center;">
+            <caption><strong>Decoding Accuracy During Encoding (Within Subjects) </strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Before Cue Onest </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_before_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> After Cue Onset </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_after_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
+    - Such pattern generalize across subjects
+        - features extracted
+            <figure style="text-align: center;">
+                <caption><strong>Gaze Features (Encoding, before cue-onset)</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 4px; text-align: center;">
+                        <figcaption>Mean Gaze</figcaption>
+                        <img src="../results/images/gaze_features/enc1_before_cue_mean.png" style="width: auto;">
+                    </figure>
+                    <div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Angle Distribution</figcaption>
+                        <img src="../results/images/gaze_features/enc1_before_cue_1d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                     <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Heat Map</figcaption>
+                        <img src="../results/images/gaze_features/enc1_before_cue_2d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    </div>
+                </div>
+            </figure>
+            <figure style="text-align: center;">
+                <caption><strong>Gaze Features (Encoding, after cue-onset)</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 4px; text-align: center;">
+                        <figcaption>Mean Gaze</figcaption>
+                        <img src="../results/images/gaze_features/enc1_after_cue_mean.png" style="width: auto;">
+                    </figure>
+                    <div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Angle Distribution</figcaption>
+                        <img src="../results/images/gaze_features/enc1_after_cue_1d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                     <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Heat Map</figcaption>
+                        <img src="../results/images/gaze_features/enc1_after_cue_2d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    </div>
+                </div>
+            </figure>
+        - inverted encoding result
+        <figure style="text-align: center;">
+            <caption><strong>Decoding Accuracy During Encoding (Across Subjects) </strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Before Cue Onest </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_before_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> After Cue Onset </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_after_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
+- More importantly, the encoding pattern generalizes to ISI and delay; the pattern is shared both within and across subjects.
+
+    - within subjects:
+        <figure style="text-align: center;">
+            <caption><strong>Decoding Accuracy (Within Subjects)</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Encoding -> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_isi_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Encoding -> Delay </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_delay_decoded_acc.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
+    - across subjects
+        - features extracted
+            <figure style="text-align: center;">
+                <caption><strong>Gaze Features (During ISI)</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 4px; text-align: center;">
+                        <figcaption>Mean Gaze</figcaption>
+                        <img src="../results/images/gaze_features/isi_mean.png" style="width: auto;">
+                    </figure>
+                    <div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Angle Distribution</figcaption>
+                        <img src="../results/images/gaze_features/isi_1d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                     <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Heat Map</figcaption>
+                        <img src="../results/images/gaze_features/isi_2d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    </div>
+                </div>
+            </figure>
+            <figure style="text-align: center;">
+                <caption><strong>Gaze Features (During Delay)</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 4px; text-align: center;">
+                        <figcaption>Mean Gaze</figcaption>
+                        <img src="../results/images/gaze_features/full_delay_mean.png" style="width: auto;">
+                    </figure>
+                    <div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Angle Distribution</figcaption>
+                        <img src="../results/images/gaze_features/full_delay_1d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                     <figure style="margin: 1px; text-align: center;">
+                        <figcaption>Heat Map</figcaption>
+                        <img src="../results/images/gaze_features/full_delay_2d.png" style="width: auto;">
+                    </figure>
+                    </div>
+                    </div>
+                </div>
+            </figure>
+
+        - inverted encoding results
+            <figure style="text-align: center;">
+                <caption><strong>Decoding Accuracy (Across Subjects)</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 8px; text-align: center;">
+                        <figcaption><strong> Encoding -> ISI </strong></figcaption>
+                        <img src="../results/images/mvpa2/enc1_isi_decoded_acc.png" style="width: auto;">
+                    </figure>
+                    <figure style="margin: 8px; text-align: center;">
+                        <figcaption><strong> Encoding -> Delay </strong></figcaption>
+                        <img src="../results/images/mvpa2/enc1_delay_decoded_acc.png" style="width: auto;">
+                    </figure>
+                </div>
+            </figure>
+
+
+- Also, the decoding accuracy correlate between within and across subjects (both $p < 0.0001$)
+    <figure style="text-align: center;">
+        <caption><strong>correlation of decoding accuracy</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption>encoding</figcaption>
+                <img src="../results/images/behavior/reg_enc_within_vs_across_subj.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption>ISI</figcaption>
+                <img src="../results/images/behavior/reg_isi_within_vs_across_subj.png" style="width: auto;">
+            </figure>
+        </div>
+    </figure>
+
+
+- In general, the pattern seems to shift over time; accuracy is always better when training and testing is within the same phase then across phases even though there is NO overlap between train-test data.
+    - within subjects
+    <figure style="text-align: center;">
+        <caption><strong>Decoding Accuracy</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption><strong> Enc -> Enc </strong></figcaption>
+                <img src="../results/images/mvpa2/within_subj_enc1_after_cue_decoded_acc.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption><strong> Enc -> ISI </strong></figcaption>
+                <img src="../results/images/mvpa2/within_subj_enc1_isi_decoded_acc.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption><strong> ISI -> ISI </strong></figcaption>
+                <img src="../results/images/mvpa2/within_subj_isi_decoded_acc.png" style="width: auto;">
+        </div>
+    </figure>
+
+    - across subjects
+        <figure style="text-align: center;">
+            <caption><strong>Decoding Accuracy</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Enc -> Enc </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_after_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Enc -> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_isi_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI -> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/isi_decoded_acc.png" style="width: auto;">
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI -> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/isi_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI -> Delay </strong></figcaption>
+                    <img src="../results/images/mvpa2/isi_delay_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Delay -> Delay </strong></figcaption>
+                    <img src="../results/images/mvpa2/delay_decoded_acc.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
+- Summary
+
+### Draw v.s. Click
 
 #### Behavioral data
 
 <span style="color:pink"> *TODO*</span>: compare how click and draw differ: clicking is general less biased but drawing is more stable.
-
-<span style="color:pink"> *TODO*</span>: firstly, memoranda is decodeable from eye-gaze, regardless of modes. (Show that the accuracy is above chance-level)
-
-Note that the pattern is (1) generalizable across subjects
-(2) generalizable across phases.
-
-<figure style="text-align: center;">
-    <caption><strong>correlation of acc</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 8px; text-align: center;">
-            <figcaption>within v.s. across subjects</figcaption>
-            <img src="../results/images/mvpa/isi_err_scale_regression.png" style="width: auto;">
-        </figure>
-        <figure style="margin: 8px; text-align: center;">
-            <figcaption>across subject ISI v.s. delay</figcaption>
-            <img src="../results/images/mvpa/isi_delay_acc_regression.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
 
 
 Previous studies have demonstrated that rich information about memoranda can be decoded from gaze patterns. This includes not only memorized features @linde-domingo_geometry_2024 but also indicators of rehearsal @de_vries_microsaccades_2024 and mental imagery of actions @heremans_eyes_2008 @daquino_eye_2023 . In this study, we found that even when memory contents were controlled and response actions were equivalent, nuances in gaze patterns were evident depending on the planned action dynamics. Specifically, gaze patterns reflect whether people were planning to draw a line or to adjust the position of dots on a circle to report the memorized orientations. 
@@ -153,24 +368,6 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
 
 ##### Further analysis of the gaze patterns
 - Inverted Encoding: 
-    - The predicted distribution of gaze (compared with the actual 2d heatmaps shown above)
-    <figure style="text-align: center;">
-        <caption><strong>Pixel-wise normalized Heatmap of Gaze</strong></caption>
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <figure style="margin: 10px; text-align: center;">
-                <figcaption>Actual</figcaption>
-                <img src="../results/images/gaze_features/delay_2d_only1_combined.png" style="width: auto;">
-            </figure>
-        </div>
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <figure style="margin: 10px; text-align: center;">
-                <figcaption>Reconstructed</figcaption>
-                <img src="../results/images/mvpa2/delay_phase_pattern_2d.png" style="width: auto;">
-            </figure>
-        </div>
-        <figcaption style="margin-top: 10px;">Average 2D heatmap of distribution of gaze during the delay, as a function of stimuli.</figcaption>
-    </figure>
-
     - drawing yield worse accuracy compared to clicking
     <figure style="text-align: center;">
         <caption><strong>Inverted Decoding: compare draw & click</strong></caption>
@@ -485,6 +682,26 @@ When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaz
 - other factors controling the process
 
 ## Supplementary
+
+### Example of inverted encoding prediction
+
+- Example of predicted distribution of gaze (compared with the actual 2d heatmaps shown above)
+<figure style="text-align: center;">
+    <caption><strong>Pixel-wise normalized Heatmap of Gaze</strong></caption>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>Actual</figcaption>
+            <img src="../results/images/gaze_features/delay_2d_only1_combined.png" style="width: auto;">
+        </figure>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <figure style="margin: 10px; text-align: center;">
+            <figcaption>Reconstructed</figcaption>
+            <img src="../results/images/mvpa2/delay_phase_pattern_2d.png" style="width: auto;">
+        </figure>
+    </div>
+    <figcaption style="margin-top: 10px;">Average 2D heatmap of distribution of gaze during the delay, as a function of stimuli.</figcaption>
+</figure>
 
 ### Individual differences
 
