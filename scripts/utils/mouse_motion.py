@@ -268,6 +268,29 @@ def compute_angle_profile(
     
     return angle_profile, time_bins, angle_bins
 
+
+### compute the magnitude
+def compute_subj_motion_mags(subj_motion_data, subj_df, lmb, mag_normalize=True):    
+    N_trials = len(subj_df)
+    subj_events = dicts_to_stroke_events(subj_motion_data)
+    subj_motions = convert_cleaned_to_table(
+        subj_events, N_trials, T_TOTAL, mag_normalize=mag_normalize)
+    subj_mag = subj_motions[..., 1]
+            
+    # normalization
+    subj_mag_max = np.quantile(subj_mag[subj_mag>0], 0.95)
+    subj_mag = subj_mag / subj_mag_max
+            
+    # masking
+    if lmb is not None:
+        mask = lmb(subj_df)
+        subj_mag = subj_mag[mask]
+            
+    subj_mag_aggregated = np.mean(subj_mag, axis=0)
+
+    return subj_mag_aggregated
+
+
 ### compute the target relevance using the profile
 from scipy.stats import entropy
 
