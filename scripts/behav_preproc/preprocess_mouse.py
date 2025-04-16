@@ -94,6 +94,7 @@ def convert_all_mouse_data(source_folder, result_folder):
             source_csv = os.path.join(source_folder, f)
             source_df = pd.read_csv(source_csv)
             subj = os.path.splitext(f)[0]
+            subj = subj.split('_')[0]
             result_path = os.path.join(result_folder, f'{subj}.npz')
             convert_csv_to_motion_npy(source_df, EXP_SETTINGS, result_path)
 
