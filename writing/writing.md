@@ -219,11 +219,11 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
         <div style="display: flex; align-items: center; justify-content: center;">
             <figure style="margin: 8px; text-align: center;">
                 <figcaption>encoding</figcaption>
-                <img src="../results/images/behavior/reg_enc_within_vs_across_subj.png" style="width: auto;">
+                <img src="../results/images/behavior/behavior_gaze/reg_enc_within_vs_across_subj.png" style="width: auto;">
             </figure>
             <figure style="margin: 8px; text-align: center;">
                 <figcaption>ISI</figcaption>
-                <img src="../results/images/behavior/reg_isi_within_vs_across_subj.png" style="width: auto;">
+                <img src="../results/images/behavior/behavior_gaze/reg_isi_within_vs_across_subj.png" style="width: auto;">
             </figure>
         </div>
     </figure>
@@ -279,6 +279,41 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                 </figure>
             </div>
         </figure>
+
+    - subject level analysis:
+        We do not found such correlation between gaze decodability and behavior performance. However, it seems that the accuracy at different phases do correlate: if someone's gaze is more trackable during certain phase, their gaze is more trackable overall. However, these accuracy do not correlate with the generalizability from encoding phase to ISI, but to correlates with the generalizability from ISI to delay. 
+
+        <figure style="text-align: center;">
+            <caption><strong>Subject Accuracy Correlation</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Enc -> Enc v.s. ISI -> ISI </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_enc_vs_isi.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Enc -> Enc v.s. Enc -> ISI </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_enc_vs_enc_isi.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI -> ISI v.s. Enc -> ISI </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_isi_vs_enc_isi.png" style="width: auto;">
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI -> ISI v.s. Delay -> Delay </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_isi_vs_delay.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI -> ISI v.s. ISI -> Delay </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_isi_vs_isi_delay.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Delay -> Delay v.s. ISI -> Delay </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_delay_vs_isi_delay.png" style="width: auto;">
+            </div>
+        </figure>
+
+
 
 - Summary
 
@@ -422,10 +457,18 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
         </figure>
     </div>
 
-    - Discussion: overall, it seems when the mode is 'drawing', the representation 'changes' more (or go through more processing) over time. this aligns with the survey result from our preliminary study.
-
-        - preliminary study survey:
+    - Discussion: overall, it seems when the mode is 'drawing', the representation 'changes' more (or go through more processing) over time. this aligns with our survey results.
+        - preliminary study survey: <span style="color:pink"> *TODO*</span>
         - survey for the current study:
+        <figure style="text-align: center;">
+            <caption><strong>MVPA: compare draw & click</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>within subject (ISI)</figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/strategy_questions.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
 
 <!--
 ##### MVPA result
@@ -468,8 +511,16 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
 
 #### Gaze Tracks the Development of serial bias over the delay
 
-- <span style="color:pink"> *TODO*</span>: firstly, show there are biases
-- <span style="color:pink"> *TODO*</span> then discuss the 'development'
+- Serial bias in behavior: not only there is serial bias, the bias is also greater in drawing than in clicking
+    <figure style="text-align: center;">
+        <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <img src="../results/images/behavior/behavior_bias/behav_sd_modes.png" style="width: auto;">
+                <figcaption>Left: within same epoch; Right: Train at t, test at t+1</figcaption>
+            </figure>
+        </div>
+    </figure>
 
 ##### The gradual accumulation of serial biases
 - MVPA results
@@ -562,11 +613,11 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Draw</figcaption>
-                    <img src="../results/images/behavior/reg_draw_last_phase_avg_sd.png" style="width: auto;">
+                    <img src="../results/images/behavior/behavior_gaze/reg_draw_last_phase_avg_sd.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Click</figcaption>
-                    <img src="../results/images/behavior/reg_click_last_phase_avg_sd.png" style="width: auto;">
+                    <img src="../results/images/behavior/behavior_gaze/reg_click_last_phase_avg_sd.png" style="width: auto;">
                 </figure>
             </div>
         </figure>
@@ -576,11 +627,11 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Draw</figcaption>
-                    <img src="../results/images/behavior/reg_draw_behav_acc_sd.png" style="width: auto;">
+                    <img src="../results/images/behavior/behavior_gaze/reg_draw_behav_acc_sd.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Click</figcaption>
-                    <img src="../results/images/behavior/reg_click_behav_acc_sd.png" style="width: auto;">
+                    <img src="../results/images/behavior/behavior_gaze/reg_click_behav_acc_sd.png" style="width: auto;">
                 </figure>
             </div>
         </figure>
@@ -591,11 +642,11 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Draw</figcaption>
-                    <img src="../results/images/behavior/reg_behav_acc_draw_gaze_sd.png" style="width: auto;">
+                    <img src="../results/images/behavior/behavior_gaze/reg_behav_acc_draw_gaze_sd.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Click</figcaption>
-                    <img src="../results/images/behavior/reg_behav_acc_click_gaze_sd.png" style="width: auto;">
+                    <img src="../results/images/behavior/behavior_gaze/reg_behav_acc_click_gaze_sd.png" style="width: auto;">
                 </figure>
             </div>
         </figure>
@@ -609,8 +660,8 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
             <caption><strong>Cardinal / Oblique bias</strong></caption>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
-                    <figcaption>Bheavior</figcaption>
-                    <img src="../results/images/behavior/cardinal_oblique_all.png" style="width: auto;">
+                    <figcaption>Behavior</figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/cardinal_oblique_all.png" style="width: auto;">
                 </figure>
             </div>
             <div style="display: flex; align-items: center; justify-content: center;">
