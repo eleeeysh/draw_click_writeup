@@ -229,7 +229,7 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
     </figure>
 
 
-- In general, the pattern seems to shift over time; accuracy is always better when training and testing is within the same phase then across phases even though there is NO overlap between train-test data.
+- There are good generalizability across phases.
     - within subjects
     <figure style="text-align: center;">
         <caption><strong>Decoding Accuracy</strong></caption>
@@ -281,10 +281,29 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
         </figure>
 
     - subject level analysis:
-        We do not found such correlation between gaze decodability and behavior performance. However, it seems that the accuracy at different phases do correlate: if someone's gaze is more trackable during certain phase, their gaze is more trackable overall. However, these accuracy do not correlate with the generalizability from encoding phase to ISI, but to correlates with the generalizability from ISI to delay. 
+        - Check if there are correlation between gaze decodability and behavior performance. 
 
         <figure style="text-align: center;">
-            <caption><strong>Subject Accuracy Correlation</strong></caption>
+            <caption><strong>Gaze Decodability v.s. Behavioral Accuracy </strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Encoding </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_behav_gaze_enc_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_behav_gaze_isi_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Delay </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_behav_gaze_delay_acc.png" style="width: auto;">
+            </div>
+        </figure>
+        
+        - Check whether the accuracy at different phases correlate: if someone's gaze is more trackable during a certain phase, is their gaze is more trackable overall. And do these accuracy correlate with the generalizability from one phase to another? 
+
+        <figure style="text-align: center;">
+            <caption><strong>Correlatrion between Gaze Decodability </strong></caption>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 8px; text-align: center;">
                     <figcaption><strong> Enc -> Enc v.s. ISI -> ISI </strong></figcaption>
@@ -458,10 +477,6 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
         <figure style="margin: 8px; text-align: center;">
             <figcaption><strong>decoding accuracy</strong></figcaption>
             <img src="../results/images/mvpa2/cross_mode_delay_decoded_multi_phases_acc_stats.png" style="width: auto;">
-        </figure>
-        <figure style="margin: 8px; text-align: center;">
-            <figcaption><strong>decoding bias</strong></figcaption>
-            <img src="../results/images/mvpa2/cross_mode_delay_decoded_multi_phases_acc_bias_stats.png" style="width: auto;">
         </figure>
     </div>
 
@@ -673,7 +688,6 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
                 </figure>
             </div>
         </figure>
-        (left p-val: 0.0198)
     - Question: therefore, do SD in gaze has anything to do with performance?
         <figure style="text-align: center;">
             <caption><strong>Gaze Serial Bias v.s. Bheavior Accuracy</strong></caption>
@@ -688,11 +702,21 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
                 </figure>
             </div>
         </figure>
-        (left p-val: 0.0090)
     
 
 - Note that not all behavior biases manifests in gaze data
     - surrounding bias: the difficulty of measuring it in inverted encoding results...
+        - but within data of 1 item only, we do see the bias goes from repulsive to attractive???
+        <figure style="text-align: center;">
+            <caption><strong>Cardinal / Oblique bias</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Behavior</figcaption>
+                    <img src="../results/images/mvpa2/delay_decoded_single_phases_sur_stats.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
     - cardinal/oblique bias: 
         <figure style="text-align: center;">
             <caption><strong>Cardinal / Oblique bias</strong></caption>
@@ -704,8 +728,14 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
             </div>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
+                    <figcaption>Gaze (delay) </figcaption>
+                    <img src="../results/images/mvpa2/enc_decoded_tuning_func.png" style="width: auto;">
+                </figure>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 10px; text-align: center;">
                     <figcaption>Gaze (ISI) </figcaption>
-                    <img src="../results/images/mvpa2/isi_delay_decoded_tuning_func.png" style="width: auto;">
+                    <img src="../results/images/mvpa2/isi_decoded_tuning_func.png" style="width: auto;">
                 </figure>
             </div>
             <div style="display: flex; align-items: center; justify-content: center;">
@@ -761,8 +791,7 @@ When multiple items are remembered, they are rehearsed in a rhythmic manner. Gaz
     </div>
 </figure>
 - comments:
-    - Clicking rehearsal seems are repeated at a around 0.4-0.8 frequency; for drawing the frequency is much smaller (which means it takes longer time in the drawing case to switch from one item to another)
-    - Interestingly it seems for drawing the rehearsal starts with item 2 first, then people will go back to rehearsal item 1; for clicking maybe because the frequency is much higher there is no clear evidence that any one of the item will be practiced first.
+    - According to the autocorrelation plot + frequency plot it seems suggesting that clicking is rehersaled at a faster speed. Clicking seems to have been rehersaled two cycles, while drawing is one cycle? Also the results suggest that their is a preference to practice a certain item first, but the order has something to do with which mode we are in.
 - <span style="color:pink"> *TODO*</span>: what are those clusters: within or across subjects?
 
 ##### How the rivalry between concurrent memory morph over time
