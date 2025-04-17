@@ -719,4 +719,114 @@ def raw_display_stats_and_distrib(
     final_stats_results = (all_stats_vals, all_subj_stats_vals) if return_subj_stats else all_stats_vals
     return final_stats_results
 
+""" to plot the stats over time """
+def raw_within_across_phase_train_test(
+        phases, train_test_lmb, subjs,
+        train_test_iterator, model_params,
+        item_weights_lmb):
+    all_phase_steps = [0, 1]
+    n_train_phases = len(phases)
+    phases_results = [[] for _ in all_phase_steps]
 
+    n_subjects = len(subjs)
+    for train_id in tqdm(range(n_train_phases)):
+        for phase_step in all_phase_steps:
+            test_id = train_id + phase_step
+            if test_id >= len(phases):
+                continue
+            # get results
+            train_phase = phases[train_id]
+            test_phase = phases[test_id]
+            results = raw_cv_train_test_invert_encoding(
+                train_test_iterator,
+                model_params, 
+                train_phase, test_phase, 
+                ['stim_1', 'stim_2'], ['stim_1', 'stim_2'], 
+                train_test_lmb, train_test_lmb, 
+                item_weights_lmb, n_subjects, use_tqdm=False)
+            phases_results[phase_step].append(results)
+
+    return phases_results
+
+def raw_plot_single_stats_over_phase(
+        ax, pred_results, stats_type, stat_name, phase_step,
+        plot_settings, common_lmb, 
+        plot_ymin=None, plot_ymax=None, label=None,
+        stats_computation_func=None,
+        item_weights_lmb=None):
+    collected_stats = []
+    
+    # compute the stats at each step
+    for phase_results in pred_results:
+        result_stats = stats_computation_func(
+            None, phase_results,
+            stats_type=stats_type, 
+            common_lmb=common_lmb, condition_lmbs=plot_settings,
+            item_weights_lmb=item_weights_lmb)
+        result_stats = result_stats['combined']
+        collected_stats.append(result_stats)
+
+    plot_xs = np.arange(len(collected_stats))+1
+    xs_names = [f'{train_id}->{train_id + phase_step}' for train_id in plot_xs]
+    
+    # collect xs, ys, yerrs
+    ys = [ss[stat_name]['mean'] for ss in collected_stats]
+    yerrs = [ss[stat_name]['sem'] for ss in collected_stats]
+
+    # plot it
+    ax.errorbar(plot_xs, ys, yerrs, fmt='o-', label=label)
+    ax.set_xticks(plot_xs)
+    ax.set_xticklabels(xs_names, rotation=45, fontsize=12)
+    
+    # set y limits
+    pymin, pymax = 0, 0
+    if stat_name == 'accuracy':
+        pymin = plot_ymin if plot_ymin is not None else 0
+        pymax = plot_ymax if plot_ymax is not None else 1.0
+    elif stat_name == 'bias':
+        pymin = plot_ymin if plot_ymin is not None else -0.2
+        pymax = plot_ymax if plot_ymax is not None else 0.2
+    ax.set_ylim([pymin, pymax])
+    ax.axhline(0, color='gold', linestyle='--')
+
+    ax.set_xlabel('train->test phase', fontsize=14)
+    ax.set_ylabel(stat_name, fontsize=14)
+
+
+def raw_plot_stats_over_phase(
+        pred_results, stats_type, plot_settings, 
+        common_lmb, plot_ymin=None, plot_ymax=None,
+        stats_computation_func=None,
+        item_weights_lmb=None):
+    stats_names = ['accuracy', 'bias'] if stats_type == 'accuracy' else ['bias']
+    nc = len(pred_results)
+    nr = len(stats_names)
+    fig, axs = plt.subplots(nr, nc, figsize=(4*nc, 3*nr))
+    if nc == 1 & nr == 1:
+        axs = np.array([[axs]])
+    elif nc == 1:
+        axs = axs[:, np.newaxis]
+    elif nr == 1:
+        axs = axs[np.newaxis, :]
+
+    for phase_step_id, collected_phase_results in enumerate(pred_results):
+        for j, stat_name in enumerate(stats_names):
+            ax = axs[j, phase_step_id]
+            raw_plot_single_stats_over_phase(
+                ax, collected_phase_results, stats_type, stat_name, phase_step_id,
+                plot_settings, common_lmb, plot_ymin=plot_ymin, plot_ymax=plot_ymax,
+                stats_computation_func=stats_computation_func,
+                item_weights_lmb=item_weights_lmb)
+            ax_title = 'within same phase' if phase_step_id == 0 else f'across +{phase_step_id} phases'
+            ax.set_title(ax_title, fontsize=16)
+
+    plt.tight_layout()
+
+def generate_windows(phases, window_size, step_size):
+    windows = []
+    window_idx = 0
+    while window_idx+window_size <= len(phases):
+        window = phases[window_idx:window_idx+window_size]
+        windows.append(window)
+        window_idx += step_size
+    return windows
