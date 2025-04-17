@@ -313,9 +313,29 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
             </div>
         </figure>
 
-
-
 - Summary
+
+
+### Hand motions:  
+- The hand motion also track the memoranda (which is not surprising tho)
+    <figure style="text-align: center;">
+        <caption><strong>Decoding Accuracy</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption><strong> Encoding </strong></figcaption>
+                <img src="../results/images/behavior/hand/inverted_enc_enc_after_cue.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption><strong> ISI </strong></figcaption>
+                <img src="../results/images/behavior/hand/inverted_enc_isi.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption><strong> delay </strong></figcaption>
+                <img src="../results/images/behavior/hand/inverted_enc_delay.png" style="width: auto;">
+            </figure>
+        </div>
+    </figure>
+
 
 ### Draw v.s. Click
 
@@ -431,7 +451,7 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
         </div>
     </figure>
 
-- Question: why they have different decoding accuracy?
+- Question: why they have different decoding accuracy? <span style="color:pink"> *TODO* FIX THIS AFTER WE RERUN THE ANALYSIS</span>
     - Firstly, we investigate how the generalizability across modes evolves throughout the delay
     
     <div style="display: flex; align-items: center; justify-content: center;">
@@ -498,7 +518,25 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
 
 #### A Probable Trade-Off Between Motor Execution and VWM Content Layout Based on Action Demands
 
-<span style="color:pink"> *TODO*</span> First of all, memoranda is also decodable from hand motions.
+- Draw v.s. Click
+    <figure style="text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>Hand Motion Magnitude</figcaption>
+                <img src="../results/images/behavior/hand/mode_hand_mag.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>Hand Motion Frequency</figcaption>
+                <img src="../results/images/behavior/hand/mode_hand_freq.png" style="width: auto;">
+            </figure>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>Inverted encoding results</figcaption>
+                <img src="../results/images/behavior/hand/inverted_enc_delay_modes.png" style="width: auto;">
+            </figure>
+        </div>
+    </figure>
 
 <span style="color:pink"> *TODO*</span> Put the comparable hand and eye analysis side by side
 
