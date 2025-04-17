@@ -145,7 +145,8 @@ class ForwardModel:
         self.feature_conversion = FeatureDowngrade(feature_conversion_params)
         # create channels and channel centers
         self.n_channels = n_channels
-        self.channel_bins = np.linspace(0, 180, n_channels+1)
+        channel_width = 180 / n_channels
+        self.channel_bins = np.linspace(0, 180, n_channels+1) - channel_width / 2
         self.channel_cenetrs = (self.channel_bins[1:] + self.channel_bins[:-1]) / 2
 
     def raw_ys_to_channel_weights(self, ys, sharpness):
