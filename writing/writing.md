@@ -291,14 +291,23 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                     <img src="../results/images/behavior/behavior_gaze/reg_behav_gaze_enc_acc.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Enc -> ISI </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_enc_isi_gen_vs_behav_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
                     <figcaption><strong> ISI </strong></figcaption>
                     <img src="../results/images/behavior/behavior_gaze/reg_behav_gaze_isi_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong>  ISI -> Delay </strong></figcaption>
+                    <img src="../results/images/behavior/behavior_gaze/reg_isi_delay_gen_vs_behav_acc.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 8px; text-align: center;">
                     <figcaption><strong> Delay </strong></figcaption>
                     <img src="../results/images/behavior/behavior_gaze/reg_behav_gaze_delay_acc.png" style="width: auto;">
             </div>
         </figure>
+                <span style="color:pink">TODO</span> To compute the genaralizability the cutoff i use is quite arbitrary?
         
         - Check whether the accuracy at different phases correlate: if someone's gaze is more trackable during a certain phase, is their gaze is more trackable overall. And do these accuracy correlate with the generalizability from one phase to another? 
 
