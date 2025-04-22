@@ -587,31 +587,34 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
 ##### The gradual accumulation of serial biases
 - MVPA results
     - two items
-    - window-size = 1.5s, step-size = 0.75s
+    - window-size = 1.5s, step-size = 0.35s
     - train or test within the same window or across
     - using method similar to [@fischerDirectNeuralSignature2024]
     <figure style="text-align: center;">
-    <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-            <img src="../results/images/mvpa2/delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
-            <figcaption>Left: within same epoch; Right: Train at t, test at t+1</figcaption>
-        </figure>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-        <figcaption>Draw</figcaption>
-            <img src="../results/images/mvpa2/draw_delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
-        </figure>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <figure style="margin: 10px; text-align: center;">
-        <figcaption>Click</figcaption>
-            <img src="../results/images/mvpa2/click_delay_decoded_multi_phases_sd_stats.png" style="width: auto;">
-        </figure>
-    </div>
-</figure>
+        <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <img src="../results/images/mvpa2/delay_phase_sd_bias_mode_compare.png" style="width: auto;">
+                <figcaption>Left: within same epoch; Right: Train at t, test at t+1</figcaption>
+            </figure>
+        </div>
+    </figure>
 
+
+    - Since in the behaviors we see a smilar-attractive v.s. dissimilar-repuslive pattern, we further split the trial by the difference between target and previous response.
+    <figure style="text-align: center;">
+        <caption><strong>Serial Dependence curve (whole delay)</strong></caption>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>draw</figcaption>
+                <img src="../results/images/mvpa2/delay_phase_draw_sd_sd_diff_func.png" style="width: auto;">
+            </figure>
+            <figure style="margin: 10px; text-align: center;">
+                <figcaption>click</figcaption>
+                <img src="../results/images/mvpa2/delay_phase_click_sd_sd_diff_func.png" style="width: auto;">
+            </figure>
+        </div>
+    </figure>
 
 
 - Indirect RSA evidence
@@ -668,50 +671,96 @@ For example, for x=10 v.s. x=30 or x=50 v.s. x=70 we see much distinct patterns 
     </table>
 
 - also see if there are correlations between SD magnitude and gaze
-    - Question: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude? <span style="color:pink"> *TODO*</span>
-    - Question: do subject of larger SD decoded from gaze has larger behavior SD?
+    - Subject Level Analysis:
+        - Question: do people of large RSA diffs  between small and large SD. show greater/smaller serial bias magnitude? <span style="color:pink"> *TODO*</span>
+        - Question: do subject of larger SD decoded from gaze has larger behavior SD?
+            <figure style="text-align: center;">
+                <caption><strong>Behavior SD v.s. Gaze SD</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 10px; text-align: center;">
+                        <figcaption>Draw</figcaption>
+                        <img src="../results/images/behavior/behavior_gaze/reg_draw_last_phase_avg_sd.png" style="width: auto;">
+                    </figure>
+                    <figure style="margin: 10px; text-align: center;">
+                        <figcaption>Click</figcaption>
+                        <img src="../results/images/behavior/behavior_gaze/reg_click_last_phase_avg_sd.png" style="width: auto;">
+                    </figure>
+                </div>
+            </figure>
+        - Question: do SD in behavior has anything to do with performance?
+            <figure style="text-align: center;">
+                <caption><strong>Behavior SD v.s. Bheavior Accuracy</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 10px; text-align: center;">
+                        <figcaption>Draw</figcaption>
+                        <img src="../results/images/behavior/behavior_gaze/reg_draw_behav_acc_sd.png" style="width: auto;">
+                    </figure>
+                    <figure style="margin: 10px; text-align: center;">
+                        <figcaption>Click</figcaption>
+                        <img src="../results/images/behavior/behavior_gaze/reg_click_behav_acc_sd.png" style="width: auto;">
+                    </figure>
+                </div>
+            </figure>
+        - Question: therefore, do SD in gaze has anything to do with performance?
+            <figure style="text-align: center;">
+                <caption><strong>Gaze Serial Bias v.s. Bheavior Accuracy</strong></caption>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <figure style="margin: 10px; text-align: center;">
+                        <figcaption>Draw</figcaption>
+                        <img src="../results/images/behavior/behavior_gaze/reg_behav_acc_draw_gaze_sd.png" style="width: auto;">
+                    </figure>
+                    <figure style="margin: 10px; text-align: center;">
+                        <figcaption>Click</figcaption>
+                        <img src="../results/images/behavior/behavior_gaze/reg_behav_acc_click_gaze_sd.png" style="width: auto;">
+                    </figure>
+                </div>
+            </figure>
+    - Within-subject, trial-wise analysis
+        - Previous analysis suggests no significant correlation with gaze bias and behavior bias at subject level. Now we switch to the relationship between gaze and behavior bias at trial level
+        - Methods: for each trial, we determine whether it is above or below the median bias within its sd-diff bin (cut into 6) and mode.
         <figure style="text-align: center;">
-            <caption><strong>Behavior SD v.s. Gaze SD</strong></caption>
+            <caption><strong>Serial Bias (function of relative sd bias)</strong></caption>
+            <div>within same phase</div>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Draw</figcaption>
-                    <img src="../results/images/behavior/behavior_gaze/reg_draw_last_phase_avg_sd.png" style="width: auto;">
+                    <img src="../results/images/mvpa2/delay_phase_draw_sd_sd_diff_sd_bias_func.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Click</figcaption>
-                    <img src="../results/images/behavior/behavior_gaze/reg_click_last_phase_avg_sd.png" style="width: auto;">
+                    <img src="../results/images/mvpa2/delay_phase_click_sd_sd_diff_sd_bias_func.png" style="width: auto;">
                 </figure>
             </div>
-        </figure>
-    - Question: do SD in behavior has anything to do with performance?
-        <figure style="text-align: center;">
-            <caption><strong>Behavior SD v.s. Bheavior Accuracy</strong></caption>
+            <div>across adjacent phases</div>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Draw</figcaption>
-                    <img src="../results/images/behavior/behavior_gaze/reg_draw_behav_acc_sd.png" style="width: auto;">
+                    <img src="../results/images/mvpa2/delay_cross_phase_draw_sd_sd_diff_sd_bias_func.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 10px; text-align: center;">
                     <figcaption>Click</figcaption>
-                    <img src="../results/images/behavior/behavior_gaze/reg_click_behav_acc_sd.png" style="width: auto;">
+                    <img src="../results/images/mvpa2/delay_cross_phase_click_sd_sd_diff_sd_bias_func.png" style="width: auto;">
                 </figure>
             </div>
         </figure>
-    - Question: therefore, do SD in gaze has anything to do with performance?
-        <figure style="text-align: center;">
-            <caption><strong>Gaze Serial Bias v.s. Bheavior Accuracy</strong></caption>
+
+        - Combining across two modes, we can better see the difference in gaze pattern between trials of 'more positive behavior' v.s. 'more negative behavior'. Also note as sd-difference increase how the timepoint the decoded gaze-bias most differs change.
+         <figure style="text-align: center;">
+            <caption><strong>Serial Bias (function of relative sd bias)</strong></caption>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
-                    <figcaption>Draw</figcaption>
-                    <img src="../results/images/behavior/behavior_gaze/reg_behav_acc_draw_gaze_sd.png" style="width: auto;">
+                    <figcaption>within same phase</figcaption>
+                    <img src="../results/images/mvpa2/delay_phase_sd_sd_diff_sd_bias_func.png" style="width: auto;">
                 </figure>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 10px; text-align: center;">
-                    <figcaption>Click</figcaption>
-                    <img src="../results/images/behavior/behavior_gaze/reg_behav_acc_click_gaze_sd.png" style="width: auto;">
+                    <figcaption>phase t -> phase t+1</figcaption>
+                    <img src="../results/images/mvpa2/delay_cross_phase_sd_sd_diff_sd_bias_func.png" style="width: auto;">
                 </figure>
             </div>
         </figure>
-    
+
 
 - Note that not all behavior biases manifests in gaze data
     - surrounding bias: the difficulty of measuring it in inverted encoding results...
