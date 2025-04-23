@@ -190,7 +190,7 @@ class ForwardModel:
             loss = DistFunctions.diff(
                 Xs_pred, Xs_test, x_dist_func, pairwise=False)
             loss = np.mean(loss)
-            print(f'sharpness {sharpness:.2f} loss {loss:.6f} (invalid: {x_outlier_ratio:.2f})')
+            # print(f'sharpness {sharpness:.2f} loss {loss:.6f} (invalid: {x_outlier_ratio:.2f})')
             if loss < best_loss:
                 best_loss = loss
                 best_sharpness = sharpness
@@ -699,7 +699,8 @@ def raw_display_stats_and_distrib(
         stats_str = ', '.join(stats_strs)
 
         # plot the distribution
-        if ax is not None:
+        to_plot = cond_settings.get('to_plot', True)
+        if to_plot and (ax is not None):
             ref_type = {
                 'accuracy': 'target',
                 'sd': 'previous',
@@ -754,7 +755,8 @@ def raw_plot_single_stats_over_phase(
         plot_settings, common_lmb, 
         plot_ymin=None, plot_ymax=None, label=None,
         stats_computation_func=None,
-        item_weights_lmb=None):
+        item_weights_lmb=None,
+        x_offset=0, color=None, alpha=1):
     collected_stats = []
     
     # compute the stats at each step
@@ -775,7 +777,7 @@ def raw_plot_single_stats_over_phase(
     yerrs = [ss[stat_name]['sem'] for ss in collected_stats]
 
     # plot it
-    ax.errorbar(plot_xs, ys, yerrs, fmt='o-', label=label)
+    ax.errorbar(plot_xs+x_offset, ys, yerrs, fmt='o-', label=label, color=color, alpha=alpha)
     ax.set_xticks(plot_xs)
     ax.set_xticklabels(xs_names, rotation=45, fontsize=12)
     

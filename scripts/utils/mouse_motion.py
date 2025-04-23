@@ -234,6 +234,7 @@ def compute_angle_profile(
     
     # get the magnitude to cap at
     mags = subj_motions[..., 1]
+    # get subject magnitude before any filteirng or masking
     subj_mag_max = np.quantile(mags[mags>0], 0.95)
     
     # masking
