@@ -474,7 +474,10 @@ def shift_align_distrib(distrib, targets, refs=None):
 
 def raw_display_shifted_distrib(
         ax, distrib, mask=None, label=None, ref_type=None,
-        ylim_min=0.0045, ylim_max=0.0065):
+        ylim_min=0.0045, ylim_max=0.0065,
+        plot_line_style='',
+        plot_line_color=None,
+        plot_line_alpha=1):
     if mask is not None:
         distrib = distrib[mask]
     
@@ -485,7 +488,10 @@ def raw_display_shifted_distrib(
     summed = summed[summed_idx]
     summed_xs = summed_xs[summed_idx]
 
-    ax.plot(summed_xs, summed, label=label)
+    ax.plot(
+        summed_xs, summed, label=label, linewidth=6,
+        linestyle=plot_line_style, color=plot_line_color,
+        alpha=plot_line_alpha)
     ax.axvline(0, color='red', linestyle='--')
     if ref_type == 'previous':
         ax.set_xticks([-45, 45])
@@ -506,6 +512,8 @@ def raw_display_shifted_distrib(
     ax.set_ylabel('probability', fontsize=14)
     ax.axhline(1/180, color='red', linestyle='--')
     ax.set_ylim([ylim_min, ylim_max])
+    ax.set_yticks(np.linspace(ylim_min, ylim_max, 5))
+    ax.set_yticklabels([])
 
 
 """ More for quantifying the fitted results """
@@ -572,6 +580,24 @@ def subjlevel_bias_stats(pred_distrib, df, cond_lmb, stat_type):
             subj_bias = stat_func_mapping[stat_type](subj_distrib)
         subj_stats[subj] = subj_bias
     return subj_stats
+
+DEFAULT_PLOT_LINE_SETTINGS = {
+    'stim 1': {
+        'plot_line_style': '-',
+        'plot_line_color': 'goldenrod',
+        'plot_line_alpha': 0.5,
+    },
+    'stim 2': {
+        'plot_line_style': '-',
+        'plot_line_color': 'peru',
+        'plot_line_alpha': 0.5,
+    },
+    'combined': {
+        'plot_line_style': '-',
+        'plot_line_color': 'sienna',
+        'plot_line_alpha': 1.0,
+    },
+}
 
 """ Finally, the most tedious to display the result and to collect stats """
 def raw_display_stats_and_distrib(
@@ -691,7 +717,7 @@ def raw_display_stats_and_distrib(
             stats = stats[~np.isnan(stats)]
             subj_mean = np.mean(stats)
             subj_sem = np.std(stats) / np.sqrt(len(stats))
-            stats_strs.append(f'{stat_name}: {subj_mean:.3f}\u00B1{subj_sem:.3f}')
+            stats_strs.append(f'{stat_name}: {subj_mean:.2f}\u00B1{subj_sem:.2f}')
             stats_vals[stat_name] = {
                 'mean': subj_mean,
                 'sem': subj_sem,
@@ -706,9 +732,16 @@ def raw_display_stats_and_distrib(
                 'sd': 'previous',
                 'sur': 'nontarget',
             }[stats_type]
+
+            # read plot configuration
+            default_plot_settings = DEFAULT_PLOT_LINE_SETTINGS.get(
+                condname, {})
+            plot_settings = cond_settings.get(
+                'plot_settings', default_plot_settings)
+
             display_shifted_distrib_func(ax, cond_distrib, 
                 mask=cond_mask, label=f'{condname}:: {stats_str}', 
-                ref_type=ref_type)
+                ref_type=ref_type, **plot_settings)
         
         # update stats
         all_subj_stats_vals[condname] = subj_stats_vals
@@ -716,7 +749,7 @@ def raw_display_stats_and_distrib(
 
     if ax is not None:
         ax.legend(
-            fontsize=14, loc="lower center", bbox_to_anchor=(0.5, 0.05))
+            fontsize=12, loc="lower center", bbox_to_anchor=(0.5, 0.0))
 
     final_stats_results = (all_stats_vals, all_subj_stats_vals) if return_subj_stats else all_stats_vals
     return final_stats_results
