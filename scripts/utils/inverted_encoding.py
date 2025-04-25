@@ -190,7 +190,7 @@ class ForwardModel:
             loss = DistFunctions.diff(
                 Xs_pred, Xs_test, x_dist_func, pairwise=False)
             loss = np.mean(loss)
-            # print(f'sharpness {sharpness:.2f} loss {loss:.6f} (invalid: {x_outlier_ratio:.2f})')
+            print(f'sharpness {sharpness:.2f} loss {loss:.6f} (invalid: {x_outlier_ratio:.2f})')
             if loss < best_loss:
                 best_loss = loss
                 best_sharpness = sharpness
@@ -484,6 +484,13 @@ def raw_display_shifted_distrib(
     # sort from -180 to 180 (0 for target)
     summed = np.mean(distrib, axis=0)
     summed_xs = deg_signed_diff(np.arange(180))
+
+    # FOR DEBUGGING
+    # pos_m = (np.abs(summed_xs) <= 30) & (summed_xs > 0)
+    # neg_m = (np.abs(summed_xs) <= 30) & (summed_xs < 0)
+    # print(f'Bias func: {compute_bias(summed):.4f}')
+    # print(f'Recompute bias: {(np.sum(summed[pos_m]) - np.sum(summed[neg_m])):.4f}')
+
     summed_idx = np.argsort(summed_xs)
     summed = summed[summed_idx]
     summed_xs = summed_xs[summed_idx]
@@ -531,31 +538,34 @@ def compute_accuracy(distrib, T=180):
     acc = np.sum(distrib_vec * baseline_vec, axis=-1)
     return acc
 
-def compute_bias(distrib, T=180, err_thresh=40):
-    # 0 --> no bias
-    # 0.25 --> most positive bias
-    # 0.5 --> neutral?
-    # 0.75 --> most negative bias
-    degs = np.linspace(0, 360, T, endpoint=False)
-    errs = deg_signed_diff(degs, epoch=360)
-    baseline_vec = np.sin(np.deg2rad(errs))
 
-    # baseline_vec = baseline_vec / np.linalg.norm(baseline_vec)
-    # distrib_vec = distrib
-    distrib_vec = distrib / np.linalg.norm(distrib, axis=-1, keepdims=True)
-
-    # error filtering
-    total_weights = np.linalg.norm(baseline_vec)
+def compute_bias_weights(err_thresh):
+    errs = deg_signed_diff(np.arange(180))
     if err_thresh is None:
         err_thresh = 180
-    mask = np.abs(errs) <= (err_thresh * 360 / T)
-    distrib_vec = distrib_vec[mask]
-    baseline_vec = baseline_vec[mask]
-    kept_weights = np.linalg.norm(baseline_vec)
+    # create the vec: 1 at max, 0 at err thresh
+    raw_weights = np.cos(np.deg2rad(errs)) # range from 0 to 1
+    weight_mask = np.abs(errs) <= err_thresh
+    # max_w = np.max(raw_weights[weight_mask])
+    # min_w = np.min(raw_weights[weight_mask])
+    weights = raw_weights * 1.0
+    # weights = (weights - min_w) / (max_w - min_w)
+    weights[~weight_mask] = 0
 
-    ratio = total_weights / kept_weights
-    bias = np.sum(distrib_vec * baseline_vec, axis=-1) * ratio
+    # fianlly flip it (also set 0 to 0)
+    weights[errs == 0] = 0
+    weights[errs < 0] = -weights[errs < 0]
+    return weights
+
+def compute_bias_test_ver(distrib, err_thresh):
+    w = compute_bias_weights(err_thresh=err_thresh)
+    ratio = 90 / err_thresh # to compensate for masking
+    bias = np.sum(distrib * w, axis=-1) * ratio
     return bias
+
+def compute_bias(distrib, T=180, err_thresh=30):
+    return compute_bias_test_ver(distrib, err_thresh=err_thresh)
+
 
 stat_func_mapping = {
     'accuracy': compute_accuracy,
@@ -717,7 +727,11 @@ def raw_display_stats_and_distrib(
             stats = stats[~np.isnan(stats)]
             subj_mean = np.mean(stats)
             subj_sem = np.std(stats) / np.sqrt(len(stats))
-            stats_strs.append(f'{stat_name}: {subj_mean:.2f}\u00B1{subj_sem:.2f}')
+            print_subj_mean, print_subj_sem = subj_mean, subj_sem
+            if stat_name == 'bias': # for display - x100 for readability
+                print_subj_mean = subj_mean * 100
+                print_subj_sem = subj_sem * 100
+            stats_strs.append(f'{stat_name}: {print_subj_mean:.2f}\u00B1{print_subj_sem:.2f}')
             stats_vals[stat_name] = {
                 'mean': subj_mean,
                 'sem': subj_sem,
@@ -749,7 +763,7 @@ def raw_display_stats_and_distrib(
 
     if ax is not None:
         ax.legend(
-            fontsize=12, loc="lower center", bbox_to_anchor=(0.5, 0.0))
+            fontsize=14, loc="lower center", bbox_to_anchor=(0.5, 0.0))
 
     final_stats_results = (all_stats_vals, all_subj_stats_vals) if return_subj_stats else all_stats_vals
     return final_stats_results
@@ -820,8 +834,8 @@ def raw_plot_single_stats_over_phase(
         pymin = plot_ymin if plot_ymin is not None else 0
         pymax = plot_ymax if plot_ymax is not None else 1.0
     elif stat_name == 'bias':
-        pymin = plot_ymin if plot_ymin is not None else -0.2
-        pymax = plot_ymax if plot_ymax is not None else 0.2
+        pymin = plot_ymin if plot_ymin is not None else -0.03
+        pymax = plot_ymax if plot_ymax is not None else 0.03
     ax.set_ylim([pymin, pymax])
     ax.axhline(0, color='gold', linestyle='--')
 
