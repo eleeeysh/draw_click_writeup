@@ -52,18 +52,30 @@ img {
 ### 
 The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there exists a shared pattern across subjects.
 
-- Gaze pattern during encoding is feature-specific -- after the cue onset. 
+- Gaze pattern is feature-specific -- starting from the later encoding stage. 
     - Tested within subject
         <figure style="text-align: center;">
-            <caption><strong>Decoding Accuracy During Encoding (Within Subjects) </strong></caption>
+            <caption><strong>Decoding Accuracy (Within Subjects) </strong></caption>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <figure style="margin: 8px; text-align: center;">
                     <figcaption><strong> Before Cue Onest </strong></figcaption>
                     <img src="../results/images/mvpa2/within_subj_enc1_before_cue_decoded_acc.png" style="width: auto;">
                 </figure>
                 <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> During Cue Onest </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_during_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
                     <figcaption><strong> After Cue Onset </strong></figcaption>
                     <img src="../results/images/mvpa2/within_subj_enc1_after_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_isi_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Delay </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_delay_decoded_acc.png" style="width: auto;">
                 </figure>
             </div>
         </figure>
@@ -85,7 +97,7 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                     </figure>
                     </div>
                     <div style="display: flex; align-items: center; justify-content: center;">
-                     <figure style="margin: 1px; text-align: center;">
+                    <figure style="margin: 1px; text-align: center;">
                         <figcaption>Heat Map</figcaption>
                         <img src="../results/images/gaze_features/enc1_before_cue_2d.png" style="width: auto;">
                     </figure>
@@ -116,40 +128,6 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                     </div>
                 </div>
             </figure>
-        - inverted encoding result
-        <figure style="text-align: center;">
-            <caption><strong>Decoding Accuracy During Encoding (Across Subjects) </strong></caption>
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> Before Cue Onest </strong></figcaption>
-                    <img src="../results/images/mvpa2/enc1_before_cue_decoded_acc.png" style="width: auto;">
-                </figure>
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> After Cue Onset </strong></figcaption>
-                    <img src="../results/images/mvpa2/enc1_after_cue_decoded_acc.png" style="width: auto;">
-                </figure>
-            </div>
-        </figure>
-
-- More importantly, the encoding pattern generalizes to ISI and delay; the pattern is shared both within and across subjects.
-
-    - within subjects:
-        <figure style="text-align: center;">
-            <caption><strong>Decoding Accuracy (Within Subjects)</strong></caption>
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> Encoding -> ISI </strong></figcaption>
-                    <img src="../results/images/mvpa2/within_subj_enc1_isi_decoded_acc.png" style="width: auto;">
-                </figure>
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> Encoding -> Delay </strong></figcaption>
-                    <img src="../results/images/mvpa2/within_subj_enc1_delay_decoded_acc.png" style="width: auto;">
-                </figure>
-            </div>
-        </figure>
-
-    - across subjects
-        - features extracted
             <figure style="text-align: center;">
                 <caption><strong>Gaze Features (During ISI)</strong></caption>
                 <div style="display: flex; align-items: center; justify-content: center;">
@@ -197,6 +175,56 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                 </div>
             </figure>
 
+
+        - inverted encoding result
+        <figure style="text-align: center;">
+            <caption><strong>Decoding Accuracy (Across Subjects) </strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Before Cue Onest </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_before_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> During Cue Onest </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_during_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> After Cue Onset </strong></figcaption>
+                    <img src="../results/images/mvpa2/enc1_after_cue_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/isi_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Delat </strong></figcaption>
+                    <img src="../results/images/mvpa2/delay_decoded_acc.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
+- More importantly, the late-encoding pattern generalizes to ISI and delay; the pattern is shared both within and across subjects.
+
+    - within subjects:
+        <figure style="text-align: center;">
+            <caption><strong>Decoding Accuracy (Within Subjects)</strong></caption>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Encoding -> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_isi_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Encoding -> Delay </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_enc1_delay_decoded_acc.png" style="width: auto;">
+                </figure>
+                <figure style="margin: 8px; text-align: center;">
+                    <figcaption><strong> Encoding -> ISI </strong></figcaption>
+                    <img src="../results/images/mvpa2/within_subj_isi_delay_decoded_acc.png" style="width: auto;">
+                </figure>
+            </div>
+        </figure>
+
+    - across subjects
         - inverted encoding results
             <figure style="text-align: center;">
                 <caption><strong>Decoding Accuracy (Across Subjects)</strong></caption>
@@ -208,6 +236,10 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                     <figure style="margin: 8px; text-align: center;">
                         <figcaption><strong> Encoding -> Delay </strong></figcaption>
                         <img src="../results/images/mvpa2/enc1_delay_decoded_acc.png" style="width: auto;">
+                    </figure>
+                    <figure style="margin: 8px; text-align: center;">
+                        <figcaption><strong> ISI -> Delay </strong></figcaption>
+                        <img src="../results/images/mvpa2/isi_delay_decoded_acc.png" style="width: auto;">
                     </figure>
                 </div>
             </figure>
@@ -225,61 +257,15 @@ The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there e
                 <figcaption>ISI</figcaption>
                 <img src="../results/images/behavior/behavior_gaze/reg_isi_within_vs_across_subj.png" style="width: auto;">
             </figure>
+            <figure style="margin: 8px; text-align: center;">
+                <figcaption>delay</figcaption>
+                <img src="../results/images/behavior/behavior_gaze/reg_delay_within_vs_across_subj.png" style="width: auto;">
+            </figure>
         </div>
     </figure>
 
 
 - There are good generalizability across phases.
-    - within subjects
-    <figure style="text-align: center;">
-        <caption><strong>Decoding Accuracy</strong></caption>
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <figure style="margin: 8px; text-align: center;">
-                <figcaption><strong> Enc -> Enc </strong></figcaption>
-                <img src="../results/images/mvpa2/within_subj_enc1_after_cue_decoded_acc.png" style="width: auto;">
-            </figure>
-            <figure style="margin: 8px; text-align: center;">
-                <figcaption><strong> Enc -> ISI </strong></figcaption>
-                <img src="../results/images/mvpa2/within_subj_enc1_isi_decoded_acc.png" style="width: auto;">
-            </figure>
-            <figure style="margin: 8px; text-align: center;">
-                <figcaption><strong> ISI -> ISI </strong></figcaption>
-                <img src="../results/images/mvpa2/within_subj_isi_decoded_acc.png" style="width: auto;">
-        </div>
-    </figure>
-
-    - across subjects
-        <figure style="text-align: center;">
-            <caption><strong>Decoding Accuracy</strong></caption>
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> Enc -> Enc </strong></figcaption>
-                    <img src="../results/images/mvpa2/enc1_after_cue_decoded_acc.png" style="width: auto;">
-                </figure>
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> Enc -> ISI </strong></figcaption>
-                    <img src="../results/images/mvpa2/enc1_isi_decoded_acc.png" style="width: auto;">
-                </figure>
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> ISI -> ISI </strong></figcaption>
-                    <img src="../results/images/mvpa2/isi_decoded_acc.png" style="width: auto;">
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> ISI -> ISI </strong></figcaption>
-                    <img src="../results/images/mvpa2/isi_decoded_acc.png" style="width: auto;">
-                </figure>
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> ISI -> Delay </strong></figcaption>
-                    <img src="../results/images/mvpa2/isi_delay_decoded_acc.png" style="width: auto;">
-                </figure>
-                <figure style="margin: 8px; text-align: center;">
-                    <figcaption><strong> Delay -> Delay </strong></figcaption>
-                    <img src="../results/images/mvpa2/delay_decoded_acc.png" style="width: auto;">
-                </figure>
-            </div>
-        </figure>
-
     - subject level analysis:
         - Check if there are correlation between gaze decodability and behavior performance. 
 
