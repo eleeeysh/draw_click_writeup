@@ -799,7 +799,7 @@ def raw_within_across_phase_train_test(
 
 def raw_plot_single_stats_over_phase(
         ax, pred_results, stats_type, stat_name, phase_step,
-        plot_settings, common_lmb, 
+        plot_settings, common_lmb, cond_to_fetch='combined',
         plot_ymin=None, plot_ymax=None, label=None,
         stats_computation_func=None,
         item_weights_lmb=None,
@@ -813,7 +813,7 @@ def raw_plot_single_stats_over_phase(
             stats_type=stats_type, 
             common_lmb=common_lmb, condition_lmbs=plot_settings,
             item_weights_lmb=item_weights_lmb)
-        result_stats = result_stats['combined']
+        result_stats = result_stats[cond_to_fetch]
         collected_stats.append(result_stats)
 
     plot_xs = np.arange(len(collected_stats))+1
@@ -845,7 +845,7 @@ def raw_plot_single_stats_over_phase(
 
 def raw_plot_stats_over_phase(
         pred_results, stats_type, plot_settings, 
-        common_lmb, plot_ymin=None, plot_ymax=None,
+        common_lmb, cond_to_fetch='combined', plot_ymin=None, plot_ymax=None,
         stats_computation_func=None,
         item_weights_lmb=None):
     stats_names = ['accuracy', 'bias'] if stats_type == 'accuracy' else ['bias']
@@ -864,7 +864,7 @@ def raw_plot_stats_over_phase(
             ax = axs[j, phase_step_id]
             raw_plot_single_stats_over_phase(
                 ax, collected_phase_results, stats_type, stat_name, phase_step_id,
-                plot_settings, common_lmb, plot_ymin=plot_ymin, plot_ymax=plot_ymax,
+                plot_settings, common_lmb, cond_to_fetch=cond_to_fetch, plot_ymin=plot_ymin, plot_ymax=plot_ymax,
                 stats_computation_func=stats_computation_func,
                 item_weights_lmb=item_weights_lmb)
             ax_title = 'within same phase' if phase_step_id == 0 else f'across +{phase_step_id} phases'
