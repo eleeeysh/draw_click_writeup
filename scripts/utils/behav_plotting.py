@@ -113,7 +113,8 @@ def plot_binned_impact(
         max_y, min_n_points,
         n_flip, always_pos, label,
         apply_IQR_mask=True,
-        sample_width=None, bin_width=None):
+        sample_width=None, bin_width=None,
+        color=None):
     
     binned_data = get_binned_impact_data(
         xs, ys, 
@@ -126,6 +127,7 @@ def plot_binned_impact(
         binned_data['x'], 
         binned_data['y_mean'], 
         yerr=binned_data['y_sem'], 
-        label=label)
+        label=label,
+        color=color)
     
     return binned_data
