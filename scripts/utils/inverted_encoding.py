@@ -499,28 +499,53 @@ def raw_display_shifted_distrib(
         summed_xs, summed, label=label, linewidth=6,
         linestyle=plot_line_style, color=plot_line_color,
         alpha=plot_line_alpha)
-    ax.axvline(0, color='red', linestyle='--')
+    ax.axvline(0, color='gray', linestyle='--', linewidth=3)
+
+    label_fontsize = 22
+    tick_label_fontsize = 16
+
+    # set the x axis
     if ref_type == 'previous':
-        ax.set_xticks([-45, 45])
+        ax.set_xticks([-60, 0, 60])
         ax.set_xticklabels([
-            '<<away from previous resp<<', 
-            '>>towards previous resp>>'], fontsize=14)
-        ax.set_xlabel('error (corrected)', fontsize=14)
+            'away<<', 
+            'last resp',
+            '>>towards'], fontsize=tick_label_fontsize)
+        # ax.set_xlabel('error (corrected)', fontsize=label_fontsize)
     elif ref_type == 'nontarget':
-        ax.set_xticks([-45, 45])
+        ax.set_xticks([-60, 0, 60])
         ax.set_xticklabels([
-            '<<away from non-target<<', 
-            '>>towards non-target>>'], fontsize=14)
-        ax.set_xlabel('error (corrected)', fontsize=14)
+            'away<<',
+            'non-target', 
+            '>>towards'], fontsize=tick_label_fontsize)
+        # ax.set_xlabel('error (corrected)', fontsize=label_fontsize)
     elif ref_type == 'target':
-        ax.set_xlabel('error', fontsize=14)
+        ax.set_xlabel('Error', fontsize=label_fontsize)
+        xticks = [-60, -30, 0, 30, 60]
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticks, fontsize=tick_label_fontsize)
     else:
         raise  NotImplementedError(f'Unknown ref_type {ref_type}')
-    ax.set_ylabel('probability', fontsize=14)
-    ax.axhline(1/180, color='red', linestyle='--')
+    
+    # set the y axis
+    ax.set_ylabel('Probability Density (× 10$^{-3}$)', fontsize=label_fontsize)
+    yticks = np.array([
+        ylim_min+0.0005, ylim_max-0.0005])
+    ax.set_yticks(yticks)
     ax.set_ylim([ylim_min, ylim_max])
-    ax.set_yticks(np.linspace(ylim_min, ylim_max, 5))
-    ax.set_yticklabels([])
+    ytick_labels = [f'{x*1000:.1f}' for x in yticks]
+    ax.set_yticklabels(ytick_labels, fontsize=tick_label_fontsize)
+    # ax.text(0.0, 0.95, r'$\times 10^{-3}$', transform=ax.transAxes,
+    #     fontsize=tick_label_fontsize, 
+    #     verticalalignment='bottom', 
+    #     horizontalalignment='right')
+
+    # mark the baseline
+    ax.axhline(1/180, color='gray', linestyle='-', linewidth=3)
+
+    # remove the top and right spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
 
 
 """ More for quantifying the fitted results """
@@ -544,7 +569,8 @@ def compute_bias_weights(err_thresh):
     if err_thresh is None:
         err_thresh = 180
     # create the vec: 1 at max, 0 at err thresh
-    raw_weights = np.cos(np.deg2rad(errs)) # range from 0 to 1
+    raw_weights = np.cos(np.deg2rad(errs)*2) # range from 0 to 1
+    # raw_weights = np.ones_like(errs)
     weight_mask = np.abs(errs) <= err_thresh
     # max_w = np.max(raw_weights[weight_mask])
     # min_w = np.min(raw_weights[weight_mask])
@@ -563,7 +589,7 @@ def compute_bias_test_ver(distrib, err_thresh):
     bias = np.sum(distrib * w, axis=-1) * ratio
     return bias
 
-def compute_bias(distrib, T=180, err_thresh=30):
+def compute_bias(distrib, T=180, err_thresh=180):
     return compute_bias_test_ver(distrib, err_thresh=err_thresh)
 
 
@@ -610,6 +636,7 @@ DEFAULT_PLOT_LINE_SETTINGS = {
 }
 
 """ Finally, the most tedious to display the result and to collect stats """
+from scipy import stats as scipy_stats
 def raw_display_stats_and_distrib(
         ax, # set to None to disable visualization
         results, stats_type, 
@@ -727,14 +754,18 @@ def raw_display_stats_and_distrib(
             stats = stats[~np.isnan(stats)]
             subj_mean = np.mean(stats)
             subj_sem = np.std(stats) / np.sqrt(len(stats))
+            # compute the tstats
+            t_stat, p_val = scipy_stats.ttest_1samp(stats, 0)
             print_subj_mean, print_subj_sem = subj_mean, subj_sem
             if stat_name == 'bias': # for display - x100 for readability
                 print_subj_mean = subj_mean * 100
                 print_subj_sem = subj_sem * 100
-            stats_strs.append(f'{stat_name}: {print_subj_mean:.2f}\u00B1{print_subj_sem:.2f}')
+            stats_strs.append(f'{stat_name}: {print_subj_mean:.2f}\u00B1{print_subj_sem:.2f} (p={p_val:.3f})')
             stats_vals[stat_name] = {
                 'mean': subj_mean,
                 'sem': subj_sem,
+                't_stat': t_stat,
+                'p_val': p_val,
             }
         stats_str = ', '.join(stats_strs)
 
@@ -754,7 +785,9 @@ def raw_display_stats_and_distrib(
                 'plot_settings', default_plot_settings)
 
             display_shifted_distrib_func(ax, cond_distrib, 
-                mask=cond_mask, label=f'{condname}:: {stats_str}', 
+                mask=cond_mask, 
+                label=f'{condname}',
+                # label=f'{condname}:: {stats_str}', # display the full stats
                 ref_type=ref_type, **plot_settings)
         
         # update stats
@@ -763,10 +796,86 @@ def raw_display_stats_and_distrib(
 
     if ax is not None:
         ax.legend(
-            fontsize=14, loc="lower center", bbox_to_anchor=(0.5, 0.0))
+            fontsize=18, loc="upper right", 
+            bbox_to_anchor=(1.0, 1.0),
+            handlelength=0.6)
 
     final_stats_results = (all_stats_vals, all_subj_stats_vals) if return_subj_stats else all_stats_vals
     return final_stats_results
+
+""" More helper functions for stats """
+import scipy.stats as scipy_stats
+def convert_stats_results_to_tables(stats_results):
+    # make it more readable
+    tables = {}
+    for condname, cond_stats in stats_results.items():
+        for stat_name in cond_stats:
+            if stat_name not in tables:
+                tables[stat_name] = {}
+            tables[stat_name][condname] = cond_stats[stat_name]
+    
+    final_tables = {}
+    for stat_name, stat_stats in tables.items():
+        stat_df = pd.DataFrame.from_dict(stat_stats, orient='index')
+        final_tables[stat_name] = stat_df
+    return final_tables
+
+def print_stats_results_as_tables(stats_results):
+    tables = convert_stats_results_to_tables(stats_results)    
+    for stat_name, stat_df in tables.items():
+        if stat_name == 'bias':
+            # bias is too small need to make it larger
+            for col in ['mean', 'sem']:
+                stat_df[col] = stat_df[col] * 100
+            # Rename the column if not already renamed
+            new_col_name = f"{col} (1e-3)"
+            stat_df = stat_df.rename(columns={col: new_col_name})
+
+        # then do the rounding
+        for col in stat_df.columns:
+            if col in ['t_stat', 'p_val']:
+                stat_df[col] = np.round(stat_df[col], 4)
+            else:
+                stat_df[col] = np.round(stat_df[col], 3)
+
+        print(f'--- {stat_name} ---')
+        print(stat_df)
+
+def stat_results_apply_ttest_2rel(stats_results, cond_names):
+    grouped = {}
+    assert len(cond_names) == 2
+    # regrouped
+    for cond_name in cond_names:
+        cond_stats = stats_results[cond_name]
+        for stat_type, subj_stats in cond_stats.items():
+            if stat_type not in grouped:
+                grouped[stat_type] = []
+            grouped[stat_type].append(subj_stats.copy())
+
+    # apply anova
+    ttest_results = {}
+    for stat_type, grouped_stats in grouped.items():
+        # only include shared subjects
+        shared_subjs = set.intersection(
+            *[set(subj_stats.keys()) for subj_stats in grouped_stats])
+        shared_subjs = list(shared_subjs)
+        filtered_subj_stats = [
+            [subj_stats[subj] for subj in shared_subjs] 
+            for subj_stats in grouped_stats]
+        stat_t, stat_pval = scipy_stats.ttest_rel(*filtered_subj_stats)
+        ttest_results[stat_type] = {
+            't_stat': stat_t,
+            'p_val': stat_pval,
+        }
+
+    return ttest_results
+
+def display_ttest_rel2_results(stats_results, cond_names):
+    ttest_results = stat_results_apply_ttest_2rel(stats_results, cond_names)
+    for cond_name in ttest_results:
+        cond_stats = ttest_results[cond_name]
+        print(f'{cond_name}: {cond_stats['t_stat']:.4f} (p={cond_stats['p_val']:.4f})')
+
 
 """ to plot the stats over time """
 def raw_within_across_phase_train_test(
@@ -797,24 +906,76 @@ def raw_within_across_phase_train_test(
 
     return phases_results
 
+from statsmodels.stats.anova import AnovaRM
+
+def anova_within_subject_test(collected_results, stat_name):
+    # first apply global ANOVA test
+    temp_results = []
+    all_cond_names = []
+    for cond_name, cond_results in collected_results.items():
+        all_cond_names.append(cond_name)
+        cond_stats = cond_results[stat_name]
+        cond_df = pd.DataFrame(list(cond_stats.items()), columns=['subject', 'metric'])
+        cond_df['condition'] = cond_name
+        temp_results.append(cond_df)
+    all_dfs = pd.concat(temp_results, ignore_index=True)
+
+    anova = AnovaRM(all_dfs, depvar='metric', subject='subject', within=['condition'])
+    anova_results = anova.fit()
+    print(anova_results)
+    
+    # next test pairwise
+    n_groups = len(all_cond_names)
+    p_vals = []
+    t_stats = []
+    comparisons = []
+    for i in range(n_groups):
+        for j in range(i+1, n_groups):
+            g1, g2 = all_cond_names[i], all_cond_names[j]
+            data1 = all_dfs[all_dfs['condition'] == g1]['metric']
+            data2 = all_dfs[all_dfs['condition'] == g2]['metric']
+            t_stat, p_val = scipy_stats.ttest_rel(data1, data2)
+            p_vals.append(p_val)
+            t_stats.append(t_stat)
+            comparisons.append(f'{g1} vs {g2}')
+    pairwise_df = pd.DataFrame({
+        'comparison': comparisons,
+        't_stat': np.round(t_stats, 4),
+        'p_val': np.round(p_vals, 4)
+    })
+
+    # TODO: we didn't apply correction for multiple comparisons
+    # But this could be applied ad-hoc?
+
+    print(pairwise_df)
+
+    return anova_results, pairwise_df
+
+
+""" plot the stats over time """
 def raw_plot_single_stats_over_phase(
         ax, pred_results, stats_type, stat_name, phase_step,
         plot_settings, common_lmb, cond_to_fetch='combined',
         plot_ymin=None, plot_ymax=None, label=None,
         stats_computation_func=None,
         item_weights_lmb=None,
-        x_offset=0, color=None, alpha=1):
+        x_offset=0, color=None, alpha=1,
+        show_significance=False,
+        subjs_to_include=None):
     collected_stats = []
+    collected_subj_stats = []
     
     # compute the stats at each step
     for phase_results in pred_results:
-        result_stats = stats_computation_func(
+        result_stats, result_subj_stats = stats_computation_func(
             None, phase_results,
             stats_type=stats_type, 
             common_lmb=common_lmb, condition_lmbs=plot_settings,
-            item_weights_lmb=item_weights_lmb)
+            item_weights_lmb=item_weights_lmb,
+            return_subj_stats=True)
         result_stats = result_stats[cond_to_fetch]
         collected_stats.append(result_stats)
+        collected_subj_stats.append(result_subj_stats)
 
     plot_xs = np.arange(len(collected_stats))+1
     xs_names = [f'{train_id}->{train_id + phase_step}' for train_id in plot_xs]
@@ -839,15 +1000,33 @@ def raw_plot_single_stats_over_phase(
     ax.set_ylim([pymin, pymax])
     ax.axhline(0, color='gold', linestyle='--')
 
+    # show significance
+    if show_significance:
+        for i in range(len(collected_stats)):
+            target_stats = collected_stats[i][stat_name]
+            t_stat, p_val = target_stats['t_stat'], target_stats['p_val']
+            if p_val < 0.05:
+                sign_ypos = ys[i] + np.sign(t_stat) * yerrs[i] * 0.05 * (
+                    pymax - pymin)
+                ax.text(
+                    plot_xs[i]+x_offset, sign_ypos,
+                    '*', fontsize=20, color=color, ha='center')
+
     ax.set_xlabel('train->test phase', fontsize=14)
-    ax.set_ylabel(stat_name, fontsize=14)
+    ylabel_display = {
+        'accuracy': 'evidence',
+        'bias': 'bias',
+    }[stat_name]
+    ax.set_ylabel(ylabel_display, fontsize=14)
 
 
 def raw_plot_stats_over_phase(
         pred_results, stats_type, plot_settings, 
         common_lmb, cond_to_fetch='combined', plot_ymin=None, plot_ymax=None,
         stats_computation_func=None,
-        item_weights_lmb=None):
+        item_weights_lmb=None,
+        show_single_significance=False,
+        show_pairwise_significance=False):
     stats_names = ['accuracy', 'bias'] if stats_type == 'accuracy' else ['bias']
     nc = len(pred_results)
     nr = len(stats_names)
@@ -866,7 +1045,8 @@ def raw_plot_stats_over_phase(
                 ax, collected_phase_results, stats_type, stat_name, phase_step_id,
                 plot_settings, common_lmb, cond_to_fetch=cond_to_fetch, plot_ymin=plot_ymin, plot_ymax=plot_ymax,
                 stats_computation_func=stats_computation_func,
-                item_weights_lmb=item_weights_lmb)
+                item_weights_lmb=item_weights_lmb,
+                show_significance=show_single_significance)
             ax_title = 'within same phase' if phase_step_id == 0 else f'across +{phase_step_id} phases'
             ax.set_title(ax_title, fontsize=16)
 
