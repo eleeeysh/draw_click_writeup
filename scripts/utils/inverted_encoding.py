@@ -248,7 +248,7 @@ def raw_across_subj_cross_phase_iterator(
         phase1, phase2, 
         phase1_stim_types, phase2_stim_types,
         phase1_lmb, phase2_lmb, item_weights_lmb,
-        kfold, use_tqdm=True):
+        kfold, use_tqdm=False):
     # load all data for all subjects
     xs1, ys1, df1, tags1 = data_load_reformat_func(
         phase1, phase1_stim_types, phase1_lmb)
@@ -290,7 +290,7 @@ def raw_within_subj_cross_phase_iterator(
         phase1, phase2, 
         phase1_stim_types, phase2_stim_types,
         phase1_lmb, phase2_lmb, item_weights_lmb,
-        kfold, use_tqdm=True):
+        kfold, use_tqdm=False):
     
     # load all data for all subjects
     xs1, ys1, df1, tags1 = data_load_reformat_func(
@@ -387,7 +387,7 @@ def raw_cv_train_test_invert_encoding(
         model_params, phase1, phase2, 
         phase1_stim_types, phase2_stim_types,
         phase1_lmb, phase2_lmb,
-        item_weights_lmb, kfold, use_tqdm=True):
+        item_weights_lmb, kfold, use_tqdm=False):
     results = []
     progress_bar = tqdm(total=kfold, desc="Processing") if use_tqdm else None
     for data in iterator_func(
@@ -570,6 +570,7 @@ def compute_bias_weights(err_thresh):
         err_thresh = 180
     # create the vec: 1 at max, 0 at err thresh
     raw_weights = np.cos(np.deg2rad(errs)*2) # range from 0 to 1
+    raw_weights = raw_weights * np.cos(np.deg2rad(errs)) # less weight for further
     # raw_weights = np.ones_like(errs)
     weight_mask = np.abs(errs) <= err_thresh
     # max_w = np.max(raw_weights[weight_mask])
@@ -985,7 +986,10 @@ def raw_plot_single_stats_over_phase(
     yerrs = [ss[stat_name]['sem'] for ss in collected_stats]
 
     # plot it
-    ax.errorbar(plot_xs+x_offset, ys, yerrs, fmt='o-', label=label, color=color, alpha=alpha)
+    ax.errorbar(
+        plot_xs+x_offset, ys, yerrs, fmt='o-', 
+        linewidth=4, elinewidth=3, capsize=5,
+        label=label, color=color, alpha=alpha)
     ax.set_xticks(plot_xs)
     ax.set_xticklabels(xs_names, rotation=45, fontsize=12)
     
@@ -1006,7 +1010,7 @@ def raw_plot_single_stats_over_phase(
             target_stats = collected_stats[i][stat_name]
             t_stat, p_val = target_stats['t_stat'], target_stats['p_val']
             if p_val < 0.05:
-                sign_ypos = ys[i] + np.sign(t_stat) * yerrs[i] * 0.05 * (
+                sign_ypos = ys[i] + np.sign(t_stat) * yerrs[i] * 0.1 * (
                     pymax - pymin)
                 ax.text(
                     plot_xs[i]+x_offset, sign_ypos,
