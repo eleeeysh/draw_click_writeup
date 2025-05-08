@@ -49,8 +49,7 @@ img {
 
 ## Results
 
-### 
-The memoranda is decodable from eye-gaze during ISI and delay. Moreover, there exists a shared pattern across subjects.
+### The memoranda is decodable from eye-gaze during ISI and delay, with patterns shared across subjects and expected output format.
 
 - Gaze pattern is feature-specific -- starting from the later encoding stage. 
     - Tested within subject

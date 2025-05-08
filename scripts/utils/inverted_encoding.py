@@ -569,9 +569,9 @@ def compute_bias_weights(err_thresh):
     if err_thresh is None:
         err_thresh = 180
     # create the vec: 1 at max, 0 at err thresh
-    raw_weights = np.cos(np.deg2rad(errs)*2) # range from 0 to 1
-    raw_weights = raw_weights * np.cos(np.deg2rad(errs)) # less weight for further
-    # raw_weights = np.ones_like(errs)
+    raw_weights = np.cos(np.deg2rad(errs)) # range from 1 to -1
+    raw_weights *= np.cos(np.deg2rad(errs) * 2)
+    # raw_weights = raw_weights ** 2
     weight_mask = np.abs(errs) <= err_thresh
     # max_w = np.max(raw_weights[weight_mask])
     # min_w = np.min(raw_weights[weight_mask])
@@ -588,6 +588,7 @@ def compute_bias_test_ver(distrib, err_thresh):
     w = compute_bias_weights(err_thresh=err_thresh)
     ratio = 90 / err_thresh # to compensate for masking
     bias = np.sum(distrib * w, axis=-1) * ratio
+
     return bias
 
 def compute_bias(distrib, T=180, err_thresh=180):
@@ -1009,6 +1010,7 @@ def raw_plot_single_stats_over_phase(
         for i in range(len(collected_stats)):
             target_stats = collected_stats[i][stat_name]
             t_stat, p_val = target_stats['t_stat'], target_stats['p_val']
+            # print(p_val)
             if p_val < 0.05:
                 sign_ypos = ys[i] + np.sign(t_stat) * yerrs[i] * 0.1 * (
                     pymax - pymin)
