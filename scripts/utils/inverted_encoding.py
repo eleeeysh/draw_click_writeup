@@ -472,33 +472,69 @@ def shift_align_distrib(distrib, targets, refs=None):
 
     return default_results, valid_mask
 
+def compress_center_align_distrib(distrib):
+    # sort from -180 to 180 (0 for target)
+    summed = np.mean(distrib, axis=0)
+    summed_xs = deg_signed_diff(np.arange(180))
+    summed_idx = np.argsort(summed_xs)
+    summed = summed[summed_idx]
+    summed_xs = summed_xs[summed_idx]
+
+    return summed_xs, summed
+
+
 def raw_display_shifted_distrib(
         ax, distrib, mask=None, label=None, ref_type=None,
         ylim_min=0.0045, ylim_max=0.0065,
         plot_line_style='',
         plot_line_color=None,
-        plot_line_alpha=1):
+        plot_line_alpha=1,
+        subj_series=None):
+    # masking
     if mask is not None:
         distrib = distrib[mask]
-    
-    # sort from -180 to 180 (0 for target)
-    summed = np.mean(distrib, axis=0)
-    summed_xs = deg_signed_diff(np.arange(180))
+        if subj_series is not None:
+            subj_series = subj_series[mask]
 
-    # FOR DEBUGGING
-    # pos_m = (np.abs(summed_xs) <= 30) & (summed_xs > 0)
-    # neg_m = (np.abs(summed_xs) <= 30) & (summed_xs < 0)
-    # print(f'Bias func: {compute_bias(summed):.4f}')
-    # print(f'Recompute bias: {(np.sum(summed[pos_m]) - np.sum(summed[neg_m])):.4f}')
+    plot_xs, plot_ys, plot_yerr = None, None, None 
+    plot_params= {
+        'label': label, 
+        'linewidth': 6,
+        'linestyle': plot_line_style, 
+        'color': plot_line_color,
+        'alpha': plot_line_alpha
+    }
+    if subj_series is not None:
+        # need to compute subject mean and sem
+        subjs = subj_series.unique()
+        subj_curves = []
+        for subj in subjs:
+            subj_mask = subj_series == int(subj)
+            subj_preds = distrib[subj_mask]
+            plot_xs, subj_curve = compress_center_align_distrib(subj_preds)
+            subj_curves.append(subj_curve)
+        # compute the mean and sem
+        plot_ys = np.mean(subj_curves, axis=0)
+        plot_yerr = np.std(subj_curves, axis=0) / np.sqrt(len(subj_curves))
+        # also the center line should be thin
+        plot_params['linewidth'] = 2
+    else:
+        # just combine everyone
+        plot_xs, plot_ys = compress_center_align_distrib(distrib)
 
-    summed_idx = np.argsort(summed_xs)
-    summed = summed[summed_idx]
-    summed_xs = summed_xs[summed_idx]
-
+    # plot the center
     ax.plot(
-        summed_xs, summed, label=label, linewidth=6,
-        linestyle=plot_line_style, color=plot_line_color,
-        alpha=plot_line_alpha)
+        plot_xs, plot_ys, **plot_params)
+
+    # plot the sem range
+    if plot_yerr is not None:
+        # plot the sem
+        ax.fill_between(
+            plot_xs, plot_ys - plot_yerr, 
+            plot_ys + plot_yerr, alpha=plot_line_alpha*0.5,
+            color=plot_line_color, linewidth=0)
+    
+    # mark the center
     ax.axvline(0, color='gray', linestyle='--', linewidth=3)
 
     label_fontsize = 22
@@ -623,12 +659,12 @@ DEFAULT_PLOT_LINE_SETTINGS = {
     'stim 1': {
         'plot_line_style': '-',
         'plot_line_color': 'goldenrod',
-        'plot_line_alpha': 0.5,
+        'plot_line_alpha': 1.0,
     },
     'stim 2': {
         'plot_line_style': '-',
         'plot_line_color': 'peru',
-        'plot_line_alpha': 0.5,
+        'plot_line_alpha': 1.0,
     },
     'combined': {
         'plot_line_style': '-',
@@ -729,6 +765,7 @@ def raw_display_stats_and_distrib(
         if cond_lmb is not None:
             cond_mask = cond_lmb(y_df)
         cond_distrib = y_distribs_results[cond_target]
+        cond_subjs = y_df['participant']
 
         # compute stats
         stats_strs = []
@@ -790,7 +827,9 @@ def raw_display_stats_and_distrib(
                 mask=cond_mask, 
                 label=f'{condname}',
                 # label=f'{condname}:: {stats_str}', # display the full stats
-                ref_type=ref_type, **plot_settings)
+                ref_type=ref_type, 
+                subj_series=cond_subjs, # to display sem
+                **plot_settings)
         
         # update stats
         all_subj_stats_vals[condname] = subj_stats_vals
