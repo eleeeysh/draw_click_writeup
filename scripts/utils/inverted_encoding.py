@@ -658,17 +658,17 @@ def subjlevel_bias_stats(pred_distrib, df, cond_lmb, stat_type):
 DEFAULT_PLOT_LINE_SETTINGS = {
     'stim 1': {
         'plot_line_style': '-',
-        'plot_line_color': 'goldenrod',
+        'plot_line_color': 'purple',
         'plot_line_alpha': 1.0,
     },
     'stim 2': {
         'plot_line_style': '-',
-        'plot_line_color': 'peru',
+        'plot_line_color': 'green',
         'plot_line_alpha': 1.0,
     },
     'combined': {
         'plot_line_style': '-',
-        'plot_line_color': 'sienna',
+        'plot_line_color': 'gray',
         'plot_line_alpha': 1.0,
     },
 }

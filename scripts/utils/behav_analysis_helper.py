@@ -37,9 +37,14 @@ def df_to_errs(df, lmb, stim1_lmb=None, stim2_lmb=None):
     valid_mask = (~(np.isnan(resps))) & (~(np.isnan(prev_resps)))
 
     # apply the per stim lmb
+    stim1_mask = np.ones(len(df), dtype=bool)
+    stim2_mask = np.ones(len(df), dtype=bool)
+    if stim1_lmb is not None:
+        stim1_mask = stim1_lmb(df)
+    if stim2_lmb is not None:
+        stim2_mask = stim2_lmb(df)
     per_stim_mask = np.concatenate([
-        stim1_lmb(df),
-        stim2_lmb(df),
+        stim1_mask, stim2_mask
     ])
     valid_mask = valid_mask & per_stim_mask
 
