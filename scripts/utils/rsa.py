@@ -174,12 +174,14 @@ ALL_TIME_STEPS = np.arange(200)
 
 def raw_conditional_rsa_subj(
         subj, lmb, feature_mask, y_name, feature_dist_method,
-        load_subj_feature_func, rsa_helper, time_steps):
+        load_subj_feature_func, rsa_helper, time_steps, window_size=1):
     # masking
     fetched_features = []
     ys = None
+    window = np.arange(window_size) - window_size // 2
     for t in time_steps:
-        features, behav_df = load_subj_feature_func(subj, [t,])
+        step_window = window + t
+        features, behav_df = load_subj_feature_func(subj, step_window)
         mask = lmb(behav_df) & ~np.isnan(behav_df[y_name].to_numpy())
 
         if np.sum(mask) >= 2:
@@ -258,9 +260,15 @@ def raw_display_lmb_dicts_rsa(
             ax, lmb, lmb_name, feature_mask, y_name, 
             feature_dist_method, 
             color=c, alpha=a, linestyle=ls)
+    
     annotate_time_line(ax, EVENTS)
     last_time_point = EVENTS['response']+500
-    ax.set_ylim([-0.15, 0.3])
+    ax.set_ylim([-0.15, 0.35])
+    ax.set_yticks([-0.1, 0.0, 0.1, 0.2, 0.3])
     ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
     if show_legend:
         ax.legend(bbox_to_anchor=(1.2, 1.0))
+
+    # finally, remove spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)

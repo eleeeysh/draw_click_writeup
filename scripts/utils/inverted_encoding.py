@@ -473,7 +473,7 @@ def shift_align_distrib(distrib, targets, refs=None):
     return default_results, valid_mask
 
 def compress_center_align_distrib(distrib):
-    # sort from -180 to 180 (0 for target)
+    # sort from -90 to 90 (0 for target)
     summed = np.mean(distrib, axis=0)
     summed_xs = deg_signed_diff(np.arange(180))
     summed_idx = np.argsort(summed_xs)
@@ -486,7 +486,7 @@ def compress_center_align_distrib(distrib):
 def raw_display_shifted_distrib(
         ax, distrib, mask=None, label=None, ref_type=None,
         ylim_min=0.0045, ylim_max=0.0065,
-        plot_line_style='',
+        plot_line_style='-',
         plot_line_color=None,
         plot_line_alpha=1,
         subj_series=None):
@@ -523,8 +523,7 @@ def raw_display_shifted_distrib(
         plot_xs, plot_ys = compress_center_align_distrib(distrib)
 
     # plot the center
-    ax.plot(
-        plot_xs, plot_ys, **plot_params)
+    ax.plot(plot_xs, plot_ys, **plot_params)
 
     # plot the sem range
     if plot_yerr is not None:
@@ -710,6 +709,7 @@ def raw_display_stats_and_distrib(
             pass
         elif stats_type == 'sd':
             refs = y_df['prev_last_response'].to_numpy(copy=True)
+            # refs = y_df['prev_last_resp_stim'].to_numpy(copy=True)
         elif stats_type == 'sur':
             ref_code = 2 - sid
             refs = y_df[f'stim_{ref_code}'].to_numpy(copy=True)
@@ -903,7 +903,10 @@ def stat_results_apply_ttest_2rel(stats_results, cond_names):
         filtered_subj_stats = [
             [subj_stats[subj] for subj in shared_subjs] 
             for subj_stats in grouped_stats]
-        stat_t, stat_pval = scipy_stats.ttest_rel(*filtered_subj_stats)
+        # stat_t, stat_pval = scipy_stats.ttest_rel(*filtered_subj_stats)
+        stat_t, stat_pval = scipy_stats.wilcoxon(
+            np.array(filtered_subj_stats[0])-np.array(filtered_subj_stats[1]), 
+            alternative='two-sided')
         ttest_results[stat_type] = {
             't_stat': stat_t,
             'p_val': stat_pval,
@@ -975,7 +978,10 @@ def anova_within_subject_test(collected_results, stat_name):
             g1, g2 = all_cond_names[i], all_cond_names[j]
             data1 = all_dfs[all_dfs['condition'] == g1]['metric']
             data2 = all_dfs[all_dfs['condition'] == g2]['metric']
-            t_stat, p_val = scipy_stats.ttest_rel(data1, data2)
+            # t_stat, p_val = scipy_stats.ttest_rel(data1, data2)
+            t_stat, p_val = scipy_stats.wilcoxon(
+                np.array(data1)-np.array(data2), 
+                alternative='two-sided')
             p_vals.append(p_val)
             t_stats.append(t_stat)
             comparisons.append(f'{g1} vs {g2}')

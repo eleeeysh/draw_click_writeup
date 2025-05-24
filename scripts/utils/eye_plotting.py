@@ -1,9 +1,27 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def annotate_time_line(ax, events, min_time=None, max_time=None):    
+def annotate_time_line(ax, events, min_time=None, max_time=None,
+        plot_ymin=-0.15, plot_ymax=0.35, hide_ymin=-0.08, hide_ymax=0.3):    
     min_time = 0 if min_time is None else min_time
     max_time = max(events.values())+5000 if max_time is None else max_time
+
+    # remove any x label or ticks
+    ax.set_xticks([])
+
+    cue_name_to_annot_mappings = {
+        's1 onset': 's1',
+        's2 onset': 's2',
+        's1 cue onset': 's1+cue',
+        's2 cue onset': 's2+cue',
+        's1 delay mask onset': 'mask',
+        's2 delay mask onset': 'mask',
+        's1 delay onset': 'ISI',
+        's2 delay onset': 'delay',
+        'response': 'response',
+    }
+
+    plot_transform = plt.gca().get_xaxis_transform()
     
     # text annotation
     for time_name, time_point in events.items():
@@ -11,28 +29,42 @@ def annotate_time_line(ax, events, min_time=None, max_time=None):
             continue
 
         # replace the delay name
-        if time_name.startswith('s1 delay'):
-            time_name = time_name.replace('s1 delay', 'ISI')
-        if time_name.startswith('s2 delay'):
-            time_name = time_name.replace('s2 delay', 'delay')
+        time_name = cue_name_to_annot_mappings.get(time_name, time_name)
         
         # s1, s2, or response?
-        text_color = 'black'
+        text_color = 'gray'
         if time_name.startswith('s1'):
             text_color = 'purple'
         if time_name.startswith('s2'):
             text_color = 'green'
             
         # specify line alpha
-        line_alpha = 0.6
+        line_alpha = 0.7
         if time_name.endswith('cue onset') or time_name.endswith('delay mask onset'):
-            line_alpha = 1.0
+            line_alpha = 0.3
         
-        ax.axvline(time_point, color=text_color, alpha=line_alpha)
+        # mark time line
+        all_plot_ymins = [plot_ymin, hide_ymax]
+        all_plot_ymaxs = [hide_ymin, plot_ymax]
+        if hide_ymax is None:
+            all_plot_ymins = [plot_ymin,]
+            all_plot_ymaxs = [plot_ymax,]
+        for pymin, pymax in zip(all_plot_ymins, all_plot_ymaxs):
+            ax.plot(
+                [time_point, time_point], 
+                [pymin, pymax], color=text_color, alpha=line_alpha,
+                linewidth=2, linestyle='--'
+            )
+
+        # add time point annotation text
+        annot_x, annot_y = time_point + 400, -0.02
+        if len(time_name) < 3:
+            annot_x = annot_x - 200
         ax.text(
-            time_point, 1.05, time_name, color=text_color, rotation=45, fontsize=10,
-            ha='left', va='bottom', transform=plt.gca().get_xaxis_transform()
+            annot_x, annot_y, time_name, color=text_color, rotation=30, fontsize=16,
+            ha='right', va='top', transform=plot_transform,
         )
+
 
 """ plot distribution of angles """
 def plot_angle_distrib_polar(ax, hist, bin_edges, stim_align=True):    
