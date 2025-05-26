@@ -241,11 +241,11 @@ def raw_plot_sd_2groups_phase_mode_compare(
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
 
     sd_diff_lmbs = {
-        'small sd diff': {
+        'small d-serial': {
             'stim1_extra_lmb': lambda d: (d['sd_diff_group_1'] < 0.5).values,
             'stim2_extra_lmb': lambda d: (d['sd_diff_group_2'] < 0.5).values,
         },
-        'large sd diff': {
+        'large d-serial': {
             'stim1_extra_lmb': lambda d: (d['sd_diff_group_1'] >= 0.5).values,
             'stim2_extra_lmb': lambda d: (d['sd_diff_group_2'] >= 0.5).values,
         }
@@ -253,7 +253,7 @@ def raw_plot_sd_2groups_phase_mode_compare(
 
     for sd_diff_group_name in sd_diff_lmbs:
         lmbs = sd_diff_lmbs[sd_diff_group_name]
-        plot_alpha = 1 if sd_diff_group_name.startswith('small sd diff') else 0.5
+        plot_alpha = 1 if sd_diff_group_name.startswith('small') else 0.5
         raw_plot_all_combined_phase_mode_compare(
             iem_results, plot_over_phase_func,
             'sd', 'bias',

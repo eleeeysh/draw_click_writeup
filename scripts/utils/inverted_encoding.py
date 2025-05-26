@@ -131,7 +131,7 @@ class FeatureDowngrade:
             # zoom
             d2_shrink_ratio_list = np.ones(len(d2_new.shape))
             d2_shrink_ratio_list[-2:] = d2_shrink_ratio
-            d2_new = zoom(d2_new, zoom=d2_shrink_ratio_list, mode='wrap', order=1)
+            d2_new = zoom(d2_new, zoom=d2_shrink_ratio_list, mode='nearest', order=1)
 
             # flatten
             new_shape = (*original_shape[:-1], d2_new.shape[-2] * d2_new.shape[-1])
