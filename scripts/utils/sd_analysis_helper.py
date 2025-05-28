@@ -236,7 +236,8 @@ def raw_plot_all_combined_phase_mode_compare(
 def raw_plot_sd_2groups_phase_mode_compare(
         iem_results, plot_over_phase_func,
         stat_type, stat_name, conds_included, 
-        common_lmb=None, plot_extension='', plot_color=None):
+        common_lmb=None, plot_extension='', plot_color=None,
+        show_legend=True):
     
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
 
@@ -256,15 +257,16 @@ def raw_plot_sd_2groups_phase_mode_compare(
         plot_alpha = 1 if sd_diff_group_name.startswith('small') else 0.5
         raw_plot_all_combined_phase_mode_compare(
             iem_results, plot_over_phase_func,
-            'sd', 'bias',
+            stat_type,stat_name,
             conds_included=conds_included,
             plot_extension='_small_sd_diff', **lmbs, common_lmb=common_lmb,
             axs=axs, plot_alpha=plot_alpha, label=' '+sd_diff_group_name,
             plot_color=plot_color)
 
-    for ax in axs:
-        # show legend
-        ax.legend(bbox_to_anchor=(1.0, 1.0), loc='upper right')
+    if show_legend:
+        for ax in axs:
+            # show legend
+            ax.legend(bbox_to_anchor=(1.0, 1.0), loc='upper right')
 
     # get plot name
     plot_name = 'mode_compare' if len(conds_included) > 1 else conds_included[0]
