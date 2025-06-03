@@ -70,13 +70,18 @@ class RSAHelper(ABC):
         pass
 
 STD_THRESH = 1e-8
+VALID_CHANNEL_W_THRESH = 0.1
+MIN_N_VALID_CHANNELS = 5
+
+from scipy.stats import spearmanr
 
 class RepRSAHelper(RSAHelper):
-    def __init__(self, channels, channel_k, rep_model: RepresentationModel):
+    def __init__(self, channels, channel_k, rep_model: RepresentationModel, use_spearman=False):
         self.rep_model = rep_model
         self.channels = np.arange(channels) * (180 // channels)
         self.channel_k = channel_k
         self.channel_resps = self.rep_model.get_representation(self.channels) #N_CHANN * 180
+        self.use_spearman = use_spearman
         
     def compute_channel_pattern(self, neural_data, stim_rep): 
         # compute their diff with channels
@@ -100,7 +105,8 @@ class RepRSAHelper(RSAHelper):
 
         return normalized_channel_pattern, channel_weights
 
-    def compute_trial_n(self, neural_data, stim_rep, cur_trial_id, dist_method, valid_channel_w_thresh=0.1):        
+    def compute_trial_n(self, neural_data, stim_rep, cur_trial_id, dist_method,
+            valid_channel_w_thresh=VALID_CHANNEL_W_THRESH):        
         target_mask = np.zeros(len(neural_data)).astype(bool)
         target_mask[cur_trial_id] = True
 
@@ -129,7 +135,7 @@ class RepRSAHelper(RSAHelper):
         w_thresh = valid_channel_w_thresh * 1 / len(self.channels)
         valid_channel_mask = rest_channel_weights > w_thresh
         corr = np.nan
-        if np.sum(valid_channel_mask) >= 2:
+        if np.sum(valid_channel_mask) >= MIN_N_VALID_CHANNELS:
             # to compute correlation we need at least 2 data
             neural_diffs = neural_diffs[valid_channel_mask]
             stim_diffs = stim_diffs[valid_channel_mask]
@@ -137,8 +143,18 @@ class RepRSAHelper(RSAHelper):
             # skip those invalid time steps
             corr = np.zeros(neural_diffs.shape[-1])
             corr_mask = np.std(neural_diffs, axis=0) > STD_THRESH
-            masked_corr = np.corrcoef(
-                stim_diffs, neural_diffs[:, corr_mask], rowvar=False)[0, 1:]
+
+            masked_neural_diffs = neural_diffs[:, corr_mask]
+            if self.use_spearman:
+                # use spearman correlation
+                masked_corr = np.array([
+                    spearmanr(stim_diffs, t_neural_diffs)[0]
+                    for t_neural_diffs in masked_neural_diffs.T])
+            else:
+                # use pearson correlation
+                masked_corr = np.corrcoef(
+                    stim_diffs, masked_neural_diffs, rowvar=False)[0, 1:]
+            
             corr[corr_mask] = masked_corr
             
         return corr
