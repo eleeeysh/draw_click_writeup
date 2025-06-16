@@ -75,6 +75,36 @@ MIN_N_VALID_CHANNELS = 5
 
 from scipy.stats import spearmanr
 
+def fast_corr_computation(m1, m2, permute=False):
+    n = m1.shape[0]
+    if permute:
+        perm = np.random.permutation(n)
+        m2 = m2[perm][:, perm]  # permute m2 is enough?
+
+    # Mi,j: i's similarity with tiral j
+    mask = ~np.eye(n, dtype=bool)
+    m1_masked = m1[mask].reshape(n, n - 1)
+    m2_masked = m2[mask].reshape(n, n - 1)
+
+    # compute the standard deviations
+    std_1 = np.std(m1_masked, axis=1, ddof=1)  # sample std
+    std_2 = np.std(m2_masked, axis=1, ddof=1)  # sample std
+
+    corr = np.nan
+    if std_1 > 0 and std_2 > 0:
+        # valid only both are non zeros
+        # compute covariance
+        m1_centered = m1_masked - m1_masked.mean(axis=1, keepdims=True)
+        m2_centered = m2_masked - m2_masked.mean(axis=1, keepdims=True)
+
+        # Compute rowwise covariance (sample, so divide by n-2)
+        cov = np.sum(m1_centered * m2_centered, axis=1) / (n - 2)
+
+        # compute the corr coefficient
+        corr = np.mean(cov / (std_1 * std_2))
+
+    return corr
+
 class RepRSAHelper(RSAHelper):
     def __init__(self, channels, channel_k, rep_model: RepresentationModel, use_spearman=False):
         self.rep_model = rep_model
@@ -185,9 +215,61 @@ class RepRSAHelper(RSAHelper):
 
         return corr_scores
 
+    def compute_one_subj_time_diffs(self, neural_data, target, dist_method):
+        """ compute the correlation scores for each trial with permutation """
+        valid_mask = ~np.isnan(target)
+        neural_data = neural_data[valid_mask]
+        target = target[valid_mask]
+
+        # generate the difference between neural data
+        # the diff between channel pattern and target pattern
+        neural_diffs = DistFunctions.diff(
+            neural_data, neural_data, 
+            dist_name=dist_method, pairwise=True)
+
+        # generate the similarity between targets
+        # the diff between channel and target corresponding stims
+        stim_reps = self.rep_model.get_representation(target)
+        stim_diffs = DistFunctions.diff(
+            stim_reps, stim_reps, 
+            dist_name='cos', pairwise=True)
+
+        return neural_diffs, stim_diffs
+    
+    def compute_one_subj_corr_trialwise_pert(self, neural_data, target, dist_method, min_trials=3, n_permutations=100):
+        """ compute the correlation scores for each trial with permutation """
+        # filter out the nan
+        valid_mask = ~np.isnan(target)
+        neural_data = neural_data[valid_mask]
+        target = target[valid_mask]
+
+        n_trials = len(neural_data)
+        
+        actual_corr = None
+        permuted_corrs = np.zeros(n_permutations).astype(float)
+        if n_trials >= min_trials:
+            # we need at least 2 trials to compute correlation
+            actual_corr = np.nan
+        else:
+            neural_diffs, stim_diffs = self.compute_one_subj_diffs(
+                neural_data, target, dist_method)
+
+            # compute the actual correlation
+            actual_corr = fast_corr_computation(
+                neural_diffs, stim_diffs, permute=False)
+            # compute the permuted correlation
+            for i in range(n_permutations):
+                permuted_corr = fast_corr_computation(
+                    neural_diffs, stim_diffs, permute=True)
+                permuted_corrs[i] = permuted_corr
+
+        return actual_corr, permuted_corrs
+
+
 """ for conditional RSA """
 ALL_TIME_STEPS = np.arange(200)
 
+""" old version
 def raw_conditional_rsa_subj(
         subj, lmb, feature_mask, y_name, feature_dist_method,
         load_subj_feature_func, rsa_helper, time_steps, window_size=1):
@@ -221,70 +303,195 @@ def raw_conditional_rsa_subj(
     avg_scores = np.nanmean(rsa_scores, axis=0)
 
     return avg_scores
+"""
 
-""" for display """
 from tqdm import tqdm
 from collections import OrderedDict
 from utils.eye_plotting import annotate_time_line
 from utils.eye_trial import generate_events
+from scipy.stats import ttest_1samp
+from mne.stats import permutation_cluster_1samp_test
 
 EVENTS = generate_events()
+RSA_PLOT_SIZE = (10, 5)
 
-def raw_get_everyone_corr(lmb, feature_mask, y_name, feature_dist_method,
-        compute_subj_rsa_func, subjs):
-    all_subj_corr = []
-    for subj in tqdm(subjs):
-    # for subj in subjs:
-        subj_data = compute_subj_rsa_func(subj, lmb, feature_mask, y_name, feature_dist_method)
-        if subj_data is not None:
-            all_subj_corr.append(subj_data)
-    all_subj_corr = np.array(all_subj_corr)
-    return all_subj_corr
+class ConditionalRSAFullHelper:
+    def __init__(self, rsa_helper: RSAHelper, plot_time_steps, plot_window_size, permutation_level=0):
+        self.rsa_helper = rsa_helper
+        self.plot_time_steps = plot_time_steps # time steps to plot/process
+        self.plot_window_size = plot_window_size # gaze: set to 3
 
-def raw_display_conditional_rsa(
-        ax, lmb, lmb_name, feature_mask, y_name, feature_dist_method, 
-        color=None, alpha=1, linestyle='-',
-        get_rsa_corr_func=None,
-        display_time_steps=None):
-    all_subj_corr = get_rsa_corr_func(lmb, feature_mask, y_name, feature_dist_method)
-    mean_corr = np.mean(all_subj_corr, axis=0)
-    sem_corr = np.std(all_subj_corr, axis=0) / np.sqrt(len(all_subj_corr))
-    actual_time_points = display_time_steps
-    ax.plot(
-        actual_time_points, mean_corr, 
-        label=lmb_name, c=color, alpha=alpha, linestyle=linestyle)
-    ax.fill_between(
-        actual_time_points, mean_corr-sem_corr, 
-        mean_corr+sem_corr, alpha=alpha*0.4, facecolor=color)
+        self.permutation_level = permutation_level # 0: grand level, 1: trial-wise, 2: time-wise
+
+    def load_subj_feature(self, *args, **kwargs):
+        """ load the subject feature, return features and behav_df """
+        raise NotImplementedError("This method should be implemented in subclass")
+
+    """ compute the scores for each subject """
+    def conditional_rsa_subj(self,
+            subj, lmb, feature_mask, y_name, feature_dist_method):
+        # masking
+        ys = None
+        window = np.arange(self.plot_window_size) - self.plot_window_size // 2
+        avg_scores = []
+
+        n_perm = 0 if self.permutation_level == 0 else 100
+        permutated_scores = []
+
+        for t in self.plot_time_steps:
+            step_window = window + t
+            features, behav_df = self.load_subj_feature(subj, step_window)
+            mask = lmb(behav_df) & ~np.isnan(behav_df[y_name].to_numpy())
+
+            if np.sum(mask) < 2:
+                # not enough trials, skip this subject
+                return None, None
+
+            features = features[mask]
+            behav_df = behav_df[mask]
+
+            # get the target
+            ys = behav_df[y_name].to_numpy()
+
+            # fetch only relevant features
+            features = features[:, feature_mask]
+
+            t_corr, t_permuted = self.rsa_helper.compute_one_subj_corr_trialwise_pert(
+                features, ys, feature_dist_method, n_permutations=n_perm)
+            avg_scores.append(t_corr)
+            permutated_scores.append(t_permuted)
+
+        return avg_scores, permutated_scores # actual v.s. permuted
+
+    """ for display """
+    def get_everyone_corr(self, 
+            lmb, feature_mask, y_name, feature_dist_method, subjs):
+        all_subj_corr = []
+        all_subj_permute_corr = []
+        filtered_subjs = []
+        for subj in tqdm(subjs):
+        # for subj in subjs:
+            subj_corr, subj_corr_permuted = self.conditional_rsa_subj(
+                subj, lmb, feature_mask, y_name, feature_dist_method)
+            if subj_corr is not None:
+                # there are data...
+                filtered_subjs.append(subj)
+                all_subj_corr.append(subj_corr)
+                all_subj_permute_corr.append(subj_corr_permuted)
+
+        if self.permutation_level > 0:
+            # do something with the trial-wise permutation
+            raise NotImplementedError
+
+        all_subj_corr = np.array(all_subj_corr)
+        return filtered_subjs, all_subj_corr
     
-def raw_display_lmb_dicts_rsa(
-        ax, lmb_dicts, feature_mask, y_name, feature_dist_method, 
-        colors=None, alphas=None, linestyles=None,
-        show_legend=True,
-        display_rsa_func=None):
-    for lmb_name, lmb in lmb_dicts.items():
-        c = None
-        if colors is not None:
-            c = colors[lmb_name]
-        a = 1.0
-        if alphas is not None:
-            a = alphas[lmb_name]
-        ls = '-'
-        if linestyles is not None:
-            ls = linestyles[lmb_name]
-        display_rsa_func(
-            ax, lmb, lmb_name, feature_mask, y_name, 
-            feature_dist_method, 
-            color=c, alpha=a, linestyle=ls)
+    def permutation_test_within_cond(self, all_subj_corr):
+        if self.permutation_level == 0:
+            n_perm = 100
+            T_obs, clusters, cluster_p_values, H0 = permutation_cluster_1samp_test(
+                all_subj_corr,
+                threshold=None,         # non-parametric threshold
+                tail=1,                 # one-sided (RSA > 0)
+                n_permutations=n_perm,
+                seed=42, out_type='mask', verbose=False)
+            significant_masks = []
+            for cluster, p in zip(clusters, cluster_p_values):
+                if p < 0.05:
+                    significant_masks.append(cluster)
+            return significant_masks
+        else:
+            raise NotImplementedError
+        
+    def permutation_test_across_cond(self, corr_1, subj_1, corr_2, subj_2):
+        raise NotImplementedError
     
-    annotate_time_line(ax, EVENTS)
-    last_time_point = EVENTS['response']+500
-    ax.set_ylim([-0.15, 0.35])
-    ax.set_yticks([-0.1, 0.0, 0.1, 0.2, 0.3])
-    ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
-    if show_legend:
-        ax.legend(bbox_to_anchor=(1.2, 1.0))
 
-    # finally, remove spines
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    def display_conditional_rsa(
+            self,
+            ax, lmb, lmb_name, feature_mask, y_name, feature_dist_method, subjs,
+            color=None, alpha=1, linestyle='-',
+            display_time_steps=None,
+            sig_yoffset=None,
+            show_sig=True):
+        all_subj_corr, valid_subjs = self.get_everyone_corr(
+            lmb, feature_mask, y_name, feature_dist_method, subjs)
+        # plot the mean and sem
+        mean_corr = np.mean(all_subj_corr, axis=0)
+        sem_corr = np.std(all_subj_corr, axis=0) / np.sqrt(len(all_subj_corr))
+        actual_time_points = display_time_steps
+        ax.plot(
+            actual_time_points, mean_corr, 
+            label=lmb_name, c=color, alpha=alpha, linestyle=linestyle)
+        ax.fill_between(
+            actual_time_points, mean_corr-sem_corr, 
+            mean_corr+sem_corr, alpha=alpha*0.4, facecolor=color)
+        
+        # display the significance
+        if show_sig:
+            significant_masks = self.permutation_test_within_cond(all_subj_corr)
+            for cluster_mask in significant_masks:
+                cluster_time_points = actual_time_points[cluster_mask]
+                ax.plot(
+                    [cluster_time_points[0], cluster_time_points[-1]],
+                    [sig_yoffset, sig_yoffset],
+                    c=color, alpha=alpha, linestyle=linestyle,
+                    linewidth=10)
+                
+        # return the stats
+        return all_subj_corr, valid_subjs, actual_time_points
+    
+    def display_lmb_dicts_rsa(self,
+            ax, lmb_dicts, feature_mask, y_name, feature_dist_method, subjs,
+            colors=None, alphas=None, linestyles=None, show_legend=True, 
+            comparison_sig_pairs=[], pairwise_sig_styles=[]):
+        lmb_corr_stats = {}
+        display_timepoints = None
+
+        for lmb_name, lmb in lmb_dicts.items():
+            c = None
+            if colors is not None:
+                c = colors[lmb_name]
+            a = 1.0
+            if alphas is not None:
+                a = alphas[lmb_name]
+            ls = '-'
+            if linestyles is not None:
+                ls = linestyles[lmb_name]
+            cond_corrs, cond_subjs, display_timepoints = self.display_conditional_rsa(
+                ax, lmb, lmb_name, feature_mask, y_name, 
+                feature_dist_method, subjs,
+                color=c, alpha=a, linestyle=ls)
+            lmb_corr_stats[lmb_name] = {
+                'corrs': cond_corrs,
+                'subjs': cond_subjs
+            }
+            
+        # plot pairwise comparison
+        for sig_pair, sig_style in zip(comparison_sig_pairs, pairwise_sig_styles):
+            assert len(sig_pair) == 2
+            significant_masks = self.permutation_test_across_cond(
+                lmb_corr_stats[sig_pair[0]]['corrs'],
+                lmb_corr_stats[sig_pair[0]]['subjs'],
+                lmb_corr_stats[sig_pair[1]]['corrs'],
+                lmb_corr_stats[sig_pair[1]]['subjs'])
+            for cluster_mask in significant_masks:
+                cluster_time_points = display_timepoints[cluster_mask]
+                ax.plot(
+                    [cluster_time_points[0], cluster_time_points[-1]],
+                    [sig_style['yoffset'], sig_style['yoffset']],
+                    c=sig_style['color'], alpha=sig_style['alpha'],
+                    linestyle=sig_style['linestyle'], linewidth=10)
+        
+        annotate_time_line(ax, EVENTS)
+        last_time_point = EVENTS['response']+500
+        ax.set_ylim([-0.15, 0.35])
+        ax.set_yticks([-0.1, 0.0, 0.1, 0.2, 0.3])
+        ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
+        ax.set_xlim(0, last_time_point) # tight
+        if show_legend:
+            ax.legend(bbox_to_anchor=(1.2, 1.0))
+
+        # finally, remove spines
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
