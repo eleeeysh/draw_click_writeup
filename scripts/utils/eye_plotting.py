@@ -1,8 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+STIM1_COLOR = 'purple'
+STIM2_COLOR = 'green'
+
 def annotate_time_line(ax, events, min_time=None, max_time=None,
-        plot_ymin=-0.15, plot_ymax=0.35, hide_ymin=-0.08, hide_ymax=0.3):    
+        plot_ymin=None, plot_ymax=None, 
+        hide_ymin=None, hide_ymax=None):    
     min_time = 0 if min_time is None else min_time
     max_time = max(events.values())+5000 if max_time is None else max_time
 
@@ -10,10 +14,10 @@ def annotate_time_line(ax, events, min_time=None, max_time=None,
     ax.set_xticks([])
 
     cue_name_to_annot_mappings = {
-        's1 onset': 's1',
-        's2 onset': 's2',
-        's1 cue onset': 's1+cue',
-        's2 cue onset': 's2+cue',
+        's1 onset': 'S1',
+        's2 onset': 'S2',
+        's1 cue onset': 'S1+cue',
+        's2 cue onset': 'S2+cue',
         's1 delay mask onset': 'mask',
         's2 delay mask onset': 'mask',
         's1 delay onset': 'ISI',
@@ -33,10 +37,10 @@ def annotate_time_line(ax, events, min_time=None, max_time=None,
         
         # s1, s2, or response?
         text_color = 'gray'
-        if time_name.startswith('s1'):
-            text_color = 'purple'
-        if time_name.startswith('s2'):
-            text_color = 'green'
+        if time_name.startswith('S1'):
+            text_color = STIM1_COLOR
+        if time_name.startswith('S2'):
+            text_color = STIM2_COLOR
             
         # specify line alpha
         line_alpha = 0.7
@@ -49,7 +53,8 @@ def annotate_time_line(ax, events, min_time=None, max_time=None,
         if hide_ymax is None:
             all_plot_ymins = [plot_ymin,]
             all_plot_ymaxs = [plot_ymax,]
-        for pymin, pymax in zip(all_plot_ymins, all_plot_ymaxs):
+        for pymin, pymax in zip(all_plot_ymins[:1], all_plot_ymaxs[:1]):
+        # for pymin, pymax in zip(all_plot_ymins, all_plot_ymaxs):
             ax.plot(
                 [time_point, time_point], 
                 [pymin, pymax], color=text_color, alpha=line_alpha,

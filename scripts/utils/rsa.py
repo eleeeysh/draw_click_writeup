@@ -91,7 +91,7 @@ def fast_corr_computation(m1, m2, permute=False):
     std_2 = np.std(m2_masked, axis=1, ddof=1)  # sample std
 
     corr = np.nan
-    if std_1 > 0 and std_2 > 0:
+    if (std_1 > 0).all() and (std_2 > 0).all():
         # valid only both are non zeros
         # compute covariance
         m1_centered = m1_masked - m1_masked.mean(axis=1, keepdims=True)
@@ -247,11 +247,11 @@ class RepRSAHelper(RSAHelper):
         
         actual_corr = None
         permuted_corrs = np.zeros(n_permutations).astype(float)
-        if n_trials >= min_trials:
+        if n_trials < min_trials:
             # we need at least 2 trials to compute correlation
             actual_corr = np.nan
         else:
-            neural_diffs, stim_diffs = self.compute_one_subj_diffs(
+            neural_diffs, stim_diffs = self.compute_one_subj_time_diffs(
                 neural_data, target, dist_method)
 
             # compute the actual correlation
@@ -307,13 +307,24 @@ def raw_conditional_rsa_subj(
 
 from tqdm import tqdm
 from collections import OrderedDict
-from utils.eye_plotting import annotate_time_line
+from utils.eye_plotting import (
+    annotate_time_line,
+
+)
 from utils.eye_trial import generate_events
 from scipy.stats import ttest_1samp
 from mne.stats import permutation_cluster_1samp_test
 
 EVENTS = generate_events()
 RSA_PLOT_SIZE = (10, 5)
+
+RSA_PLOT_YMIN = -0.1 # -0.15
+RSA_PLOT_YMAX = 0.28 # 0.35
+RSA_PLOT_YMIN_HIDDEN = -0.05 # -0.08
+RSA_PLOT_YMAX_HIDDEN = 0.23 # 0.3
+RSA_PLOT_YTICKS = [0.0, 0.1, 0.2] # [-0.1, 0.0, 0.1, 0.2, 0.3]
+
+PERM_TEST_N = 100
 
 class ConditionalRSAFullHelper:
     def __init__(self, rsa_helper: RSAHelper, plot_time_steps, plot_window_size, permutation_level=0):
@@ -369,8 +380,8 @@ class ConditionalRSAFullHelper:
         all_subj_corr = []
         all_subj_permute_corr = []
         filtered_subjs = []
-        for subj in tqdm(subjs):
-        # for subj in subjs:
+        # for subj in tqdm(subjs):
+        for subj in subjs:
             subj_corr, subj_corr_permuted = self.conditional_rsa_subj(
                 subj, lmb, feature_mask, y_name, feature_dist_method)
             if subj_corr is not None:
@@ -384,16 +395,15 @@ class ConditionalRSAFullHelper:
             raise NotImplementedError
 
         all_subj_corr = np.array(all_subj_corr)
-        return filtered_subjs, all_subj_corr
+        return all_subj_corr, filtered_subjs
     
     def permutation_test_within_cond(self, all_subj_corr):
         if self.permutation_level == 0:
-            n_perm = 100
             T_obs, clusters, cluster_p_values, H0 = permutation_cluster_1samp_test(
                 all_subj_corr,
                 threshold=None,         # non-parametric threshold
                 tail=1,                 # one-sided (RSA > 0)
-                n_permutations=n_perm,
+                n_permutations=PERM_TEST_N,
                 seed=42, out_type='mask', verbose=False)
             significant_masks = []
             for cluster, p in zip(clusters, cluster_p_values):
@@ -404,7 +414,33 @@ class ConditionalRSAFullHelper:
             raise NotImplementedError
         
     def permutation_test_across_cond(self, corr_1, subj_1, corr_2, subj_2):
-        raise NotImplementedError
+        if self.permutation_level == 0:
+            shared_subjs = list(set(subj_1).intersection(subj_2))
+            subj1_id_map = {s:i for i, s in enumerate(subj_1)}
+            subj2_id_map = {s:i for i, s in enumerate(subj_2)}
+            subj1_indices = [subj1_id_map[s] for s in shared_subjs]
+            subj2_indices = [subj2_id_map[s] for s in shared_subjs]
+            corr1_shared = corr_1[subj1_indices]
+            corr2_shared = corr_2[subj2_indices]
+            
+            # paorwise difference
+            corr_diffs = corr1_shared - corr2_shared
+            # print(corr_diffs.shape)
+            # print(np.min(corr_diffs), np.max(corr_diffs))
+            T_obs, clusters, cluster_p_values, H0 = permutation_cluster_1samp_test(
+                corr_diffs,
+                threshold=None,       # non-parametric cluster-forming threshold
+                tail=0,               # two-sided test
+                n_permutations=PERM_TEST_N,
+                seed=42, out_type='mask', verbose=False
+            )
+            significant_masks = []
+            for cluster, p in zip(clusters, cluster_p_values):
+                if p < 0.05:
+                    significant_masks.append(cluster)
+            return significant_masks
+        else:
+            raise NotImplementedError("Only grand-level permutation test is supported")
     
 
     def display_conditional_rsa(
@@ -412,8 +448,7 @@ class ConditionalRSAFullHelper:
             ax, lmb, lmb_name, feature_mask, y_name, feature_dist_method, subjs,
             color=None, alpha=1, linestyle='-',
             display_time_steps=None,
-            sig_yoffset=None,
-            show_sig=True):
+            sig_yoffset=None):
         all_subj_corr, valid_subjs = self.get_everyone_corr(
             lmb, feature_mask, y_name, feature_dist_method, subjs)
         # plot the mean and sem
@@ -428,22 +463,23 @@ class ConditionalRSAFullHelper:
             mean_corr+sem_corr, alpha=alpha*0.4, facecolor=color)
         
         # display the significance
-        if show_sig:
+        if sig_yoffset is not None:
             significant_masks = self.permutation_test_within_cond(all_subj_corr)
             for cluster_mask in significant_masks:
                 cluster_time_points = actual_time_points[cluster_mask]
                 ax.plot(
                     [cluster_time_points[0], cluster_time_points[-1]],
                     [sig_yoffset, sig_yoffset],
-                    c=color, alpha=alpha, linestyle=linestyle,
-                    linewidth=10)
+                    c=color, alpha=alpha*0.7, 
+                    linestyle=linestyle,
+                    linewidth=6)
                 
         # return the stats
         return all_subj_corr, valid_subjs, actual_time_points
     
     def display_lmb_dicts_rsa(self,
-            ax, lmb_dicts, feature_mask, y_name, feature_dist_method, subjs,
-            colors=None, alphas=None, linestyles=None, show_legend=True, 
+            ax, lmb_dicts, feature_mask, y_name, feature_dist_method, subjs, display_time_steps,
+            colors=None, alphas=None, linestyles=None, sig_yoffsets={}, show_legend=True, 
             comparison_sig_pairs=[], pairwise_sig_styles=[]):
         lmb_corr_stats = {}
         display_timepoints = None
@@ -458,10 +494,14 @@ class ConditionalRSAFullHelper:
             ls = '-'
             if linestyles is not None:
                 ls = linestyles[lmb_name]
+            sig_yoffset = sig_yoffsets.get(lmb_name, None)
             cond_corrs, cond_subjs, display_timepoints = self.display_conditional_rsa(
                 ax, lmb, lmb_name, feature_mask, y_name, 
                 feature_dist_method, subjs,
-                color=c, alpha=a, linestyle=ls)
+                color=c, alpha=a, linestyle=ls,
+                display_time_steps=display_time_steps,
+                sig_yoffset=sig_yoffset
+            )
             lmb_corr_stats[lmb_name] = {
                 'corrs': cond_corrs,
                 'subjs': cond_subjs
@@ -481,12 +521,16 @@ class ConditionalRSAFullHelper:
                     [cluster_time_points[0], cluster_time_points[-1]],
                     [sig_style['yoffset'], sig_style['yoffset']],
                     c=sig_style['color'], alpha=sig_style['alpha'],
-                    linestyle=sig_style['linestyle'], linewidth=10)
+                    linestyle=sig_style['linestyle'], linewidth=6)
         
-        annotate_time_line(ax, EVENTS)
+        annotate_time_line(
+            ax, EVENTS,
+            plot_ymin=RSA_PLOT_YMIN, plot_ymax=RSA_PLOT_YMAX,
+            hide_ymin=RSA_PLOT_YMIN_HIDDEN, hide_ymax=RSA_PLOT_YMAX_HIDDEN)
         last_time_point = EVENTS['response']+500
-        ax.set_ylim([-0.15, 0.35])
-        ax.set_yticks([-0.1, 0.0, 0.1, 0.2, 0.3])
+        ax.set_ylim([RSA_PLOT_YMIN, RSA_PLOT_YMAX])
+        ax.set_yticks(RSA_PLOT_YTICKS)
+        ax.set_yticklabels(RSA_PLOT_YTICKS, fontsize=12)
         ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
         ax.set_xlim(0, last_time_point) # tight
         if show_legend:
