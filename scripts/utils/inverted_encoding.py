@@ -654,15 +654,18 @@ def subjlevel_bias_stats(pred_distrib, df, cond_lmb, stat_type):
         subj_stats[subj] = subj_bias
     return subj_stats
 
+
+from .eye_plotting import STIM1_COLOR, STIM2_COLOR
+
 DEFAULT_PLOT_LINE_SETTINGS = {
     'stim 1': {
         'plot_line_style': '-',
-        'plot_line_color': 'purple',
+        'plot_line_color': STIM1_COLOR,
         'plot_line_alpha': 1.0,
     },
     'stim 2': {
         'plot_line_style': '-',
-        'plot_line_color': 'green',
+        'plot_line_color': STIM2_COLOR,
         'plot_line_alpha': 1.0,
     },
     'combined': {

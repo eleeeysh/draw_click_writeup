@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-STIM1_COLOR = 'purple'
-STIM2_COLOR = 'green'
+STIM1_COLOR = '#A96FAE'
+STIM2_COLOR = '#83B174'
 
 def annotate_time_line(ax, events, min_time=None, max_time=None,
         plot_ymin=None, plot_ymax=None, 
