@@ -319,7 +319,7 @@ EVENTS = generate_events()
 RSA_PLOT_SIZE = (10, 5)
 
 RSA_PLOT_YMIN = -0.1 # -0.15
-RSA_PLOT_YMAX = 0.28 # 0.35
+RSA_PLOT_YMAX = 0.25 # 0.35
 RSA_PLOT_YMIN_HIDDEN = -0.05 # -0.08
 RSA_PLOT_YMAX_HIDDEN = 0.23 # 0.3
 RSA_PLOT_YTICKS = [0.0, 0.1, 0.2] # [-0.1, 0.0, 0.1, 0.2, 0.3]
@@ -333,9 +333,12 @@ class ConditionalRSAFullHelper:
         self.plot_window_size = plot_window_size # gaze: set to 3
 
         self.permutation_level = permutation_level # 0: grand level, 1: trial-wise, 2: time-wise
-
+    
     def load_subj_feature(self, *args, **kwargs):
         """ load the subject feature, return features and behav_df """
+        raise NotImplementedError("This method should be implemented in subclass")
+
+    def get_subj_data_loader(self, subj, all_time_windows):
         raise NotImplementedError("This method should be implemented in subclass")
 
     """ compute the scores for each subject """
@@ -349,9 +352,14 @@ class ConditionalRSAFullHelper:
         n_perm = 0 if self.permutation_level == 0 else 100
         permutated_scores = []
 
+        # create all time windows
+        all_step_windows = []
         for t in self.plot_time_steps:
             step_window = window + t
-            features, behav_df = self.load_subj_feature(subj, step_window)
+            all_step_windows.append(step_window)
+
+        for subj_time_data in self.get_subj_data_loader(subj, all_step_windows):
+            features, behav_df = subj_time_data
             mask = lmb(behav_df) & ~np.isnan(behav_df[y_name].to_numpy())
 
             if np.sum(mask) < 2:
@@ -395,6 +403,10 @@ class ConditionalRSAFullHelper:
             raise NotImplementedError
 
         all_subj_corr = np.array(all_subj_corr)
+
+        # make the nan zero
+        all_subj_corr = np.nan_to_num(all_subj_corr, nan=0.0)
+
         return all_subj_corr, filtered_subjs
     
     def permutation_test_within_cond(self, all_subj_corr):
