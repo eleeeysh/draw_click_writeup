@@ -324,7 +324,7 @@ RSA_PLOT_YMIN_HIDDEN = -0.05 # -0.08
 RSA_PLOT_YMAX_HIDDEN = 0.23 # 0.3
 RSA_PLOT_YTICKS = [0.0, 0.1, 0.2] # [-0.1, 0.0, 0.1, 0.2, 0.3]
 
-PERM_TEST_N = 100
+PERM_TEST_N = 1000
 
 class ConditionalRSAFullHelper:
     def __init__(self, rsa_helper: RSAHelper, plot_time_steps, plot_window_size, permutation_level=0):
@@ -380,8 +380,8 @@ class ConditionalRSAFullHelper:
         all_subj_corr = []
         all_subj_permute_corr = []
         filtered_subjs = []
-        # for subj in tqdm(subjs):
-        for subj in subjs:
+        for subj in tqdm(subjs):
+        # for subj in subjs:
             subj_corr, subj_corr_permuted = self.conditional_rsa_subj(
                 subj, lmb, feature_mask, y_name, feature_dist_method)
             if subj_corr is not None:
@@ -534,7 +534,9 @@ class ConditionalRSAFullHelper:
         ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
         ax.set_xlim(0, last_time_point) # tight
         if show_legend:
-            ax.legend(bbox_to_anchor=(1.2, 1.0))
+            ax.legend(
+                loc='upper left',
+                bbox_to_anchor=(1.05, 1.0))
 
         # finally, remove spines
         ax.spines['top'].set_visible(False)

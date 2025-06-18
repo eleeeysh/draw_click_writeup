@@ -6,6 +6,20 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
+import matplotlib.patches as patches
+from matplotlib.transforms import Affine2D
+
+def plot_rotate_bar(ax, angle, width, height, x=0, y=0, linewidth=2):
+    bar = patches.Rectangle(
+        (x - width / 2, y - height / 2), 
+        width, height,  
+        linewidth=linewidth,
+        facecolor='lightgray', 
+        edgecolor='black')
+    real_angle = (90-angle) % 180
+    transform = Affine2D().rotate_deg(real_angle) + ax.transData
+    bar.set_transform(transform)
+    ax.add_patch(bar)
 
 def plot_single_1d_gaze(d1_gaze_pattern, angle, ax, set_title=True):
     norm_values = d1_gaze_pattern / np.max(np.abs(d1_gaze_pattern))
@@ -119,13 +133,15 @@ def plot_single_1d_plot_vectors(d1_pattern, angle, ax, set_title=True):
     
     # plot the grating bar
     if angle is not None:
-        print(angle)
-        bar_length = 0.5
-        bar_rad = np.radians(90 - angle)
-        ax.plot(
-            [-np.cos(bar_rad)*bar_length, np.cos(bar_rad)*bar_length],
-            [-np.sin(bar_rad)*bar_length, np.sin(bar_rad)*bar_length],
-            lw=50, c='purple')
+        # bar_length = 0.5
+        # bar_rad = np.radians(90 - angle)
+        # ax.plot(
+        #     [-np.cos(bar_rad)*bar_length, np.cos(bar_rad)*bar_length],
+        #     [-np.sin(bar_rad)*bar_length, np.sin(bar_rad)*bar_length],
+        #     lw=50, c='purple')
+        plot_rotate_bar(
+            ax, angle, width=1.0, height=0.2, 
+            x=0, y=0, linewidth=10)
     
     plot_scale = 1.2
     ax.set_xlim([-plot_scale, plot_scale])

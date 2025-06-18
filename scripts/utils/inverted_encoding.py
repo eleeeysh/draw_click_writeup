@@ -517,7 +517,7 @@ def raw_display_shifted_distrib(
         plot_ys = np.mean(subj_curves, axis=0)
         plot_yerr = np.std(subj_curves, axis=0) / np.sqrt(len(subj_curves))
         # also the center line should be thin
-        plot_params['linewidth'] = 2
+        plot_params['linewidth'] = 4
     else:
         # just combine everyone
         plot_xs, plot_ys = compress_center_align_distrib(distrib)
@@ -536,8 +536,8 @@ def raw_display_shifted_distrib(
     # mark the center
     ax.axvline(0, color='gray', linestyle='--', linewidth=3)
 
-    label_fontsize = 22
-    tick_label_fontsize = 16
+    label_fontsize = 24
+    tick_label_fontsize = 22
 
     # set the x axis
     if ref_type == 'previous':
@@ -556,7 +556,7 @@ def raw_display_shifted_distrib(
         # ax.set_xlabel('error (corrected)', fontsize=label_fontsize)
     elif ref_type == 'target':
         ax.set_xlabel('Error', fontsize=label_fontsize)
-        xticks = [-60, -30, 0, 30, 60]
+        xticks = [-45, 0, 45]
         ax.set_xticks(xticks)
         ax.set_xticklabels(xticks, fontsize=tick_label_fontsize)
     else:
