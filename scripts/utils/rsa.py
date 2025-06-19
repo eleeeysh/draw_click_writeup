@@ -469,7 +469,8 @@ class ConditionalRSAFullHelper:
         actual_time_points = display_time_steps
         ax.plot(
             actual_time_points, mean_corr, 
-            label=lmb_name, c=color, alpha=alpha, linestyle=linestyle)
+            label=lmb_name, c=color, alpha=alpha, linestyle=linestyle,
+            linewidth=3)
         ax.fill_between(
             actual_time_points, mean_corr-sem_corr, 
             mean_corr+sem_corr, alpha=alpha*0.4, facecolor=color)
@@ -542,7 +543,7 @@ class ConditionalRSAFullHelper:
         last_time_point = EVENTS['response']+500
         ax.set_ylim([RSA_PLOT_YMIN, RSA_PLOT_YMAX])
         ax.set_yticks(RSA_PLOT_YTICKS)
-        ax.set_yticklabels(RSA_PLOT_YTICKS, fontsize=12)
+        ax.set_yticklabels(RSA_PLOT_YTICKS, fontsize=16)
         ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
         ax.set_xlim(0, last_time_point) # tight
         if show_legend:
