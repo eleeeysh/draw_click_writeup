@@ -318,11 +318,11 @@ from mne.stats import permutation_cluster_1samp_test
 EVENTS = generate_events()
 RSA_PLOT_SIZE = (10, 5)
 
-RSA_PLOT_YMIN = -0.1 # -0.15
-RSA_PLOT_YMAX = 0.25 # 0.35
-RSA_PLOT_YMIN_HIDDEN = -0.05 # -0.08
-RSA_PLOT_YMAX_HIDDEN = 0.23 # 0.3
-RSA_PLOT_YTICKS = [0.0, 0.1, 0.2] # [-0.1, 0.0, 0.1, 0.2, 0.3]
+RSA_PLOT_YMIN = -0.065 # -0.15
+RSA_PLOT_YMAX = 0.21 # 0.35
+RSA_PLOT_YMIN_HIDDEN = -0.04 # -0.08
+RSA_PLOT_YMAX_HIDDEN = 0.18 # 0.3
+RSA_PLOT_YTICKS = [0.0, 0.1,] # [-0.1, 0.0, 0.1, 0.2, 0.3]
 
 PERM_TEST_N = 1000
 
@@ -539,7 +539,8 @@ class ConditionalRSAFullHelper:
         annotate_time_line(
             ax, EVENTS,
             plot_ymin=RSA_PLOT_YMIN, plot_ymax=RSA_PLOT_YMAX,
-            hide_ymin=RSA_PLOT_YMIN_HIDDEN, hide_ymax=RSA_PLOT_YMAX_HIDDEN)
+            hide_ymin=RSA_PLOT_YMIN_HIDDEN, hide_ymax=RSA_PLOT_YMAX_HIDDEN,
+            to_simplify=True)
         last_time_point = EVENTS['response']+500
         ax.set_ylim([RSA_PLOT_YMIN, RSA_PLOT_YMAX])
         ax.set_yticks(RSA_PLOT_YTICKS)

@@ -17,7 +17,8 @@ def plot_rotate_bar(ax, angle, width, height, x=0, y=0, linewidth=2):
         facecolor='lightgray', 
         edgecolor='black')
     real_angle = (90-angle) % 180
-    transform = Affine2D().rotate_deg(real_angle) + ax.transData
+    transform = Affine2D().rotate_deg_around(
+        x, y, real_angle) + ax.transData
     bar.set_transform(transform)
     ax.add_patch(bar)
 
@@ -36,12 +37,9 @@ def plot_single_1d_gaze(d1_gaze_pattern, angle, ax, set_title=True):
 
     # plot the grating bar
     if angle is not None:
-        bar_length = 0.5
-        bar_rad = np.radians(90 - angle)
-        ax.plot(
-            [-np.cos(bar_rad)*bar_length, np.cos(bar_rad)*bar_length],
-            [-np.sin(bar_rad)*bar_length, np.sin(bar_rad)*bar_length],
-            lw=50, c='purple')
+        plot_rotate_bar(
+            ax, angle, width=1.0, height=0.2, 
+            x=0, y=0, linewidth=10)
     
     ax.set_xlim([-1.2, 1.2])
     ax.set_ylim([-1.2, 1.2])
@@ -50,7 +48,7 @@ def plot_single_1d_gaze(d1_gaze_pattern, angle, ax, set_title=True):
     ax.set_aspect('equal')
 
     if set_title:
-        ax.set_title(f'{angle:.0f}°', fontsize=AX_TITLE_SIZE*3)
+        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3)
 
 def plot_single_2d_gaze(d2_gaze_pattern, settings, angle, ax, show_grating=True, set_title=True):
     # normalize
@@ -69,15 +67,12 @@ def plot_single_2d_gaze(d2_gaze_pattern, settings, angle, ax, show_grating=True,
 
     # plot the grating bar
     if show_grating:
-        bar_length = (width/2) * 0.5
-        lw = 15 * (width/2) * 0.5
-        bar_rad = np.radians(90 - angle)
-        x_offset = width / 2 - 0.5
-        y_offset = width / 2 - 0.5
-        ax.plot(
-            [x_offset-np.cos(bar_rad)*bar_length, x_offset+np.cos(bar_rad)*bar_length],
-            [y_offset-np.sin(bar_rad)*bar_length, y_offset+np.sin(bar_rad)*bar_length],
-            lw=lw, c='purple')
+        plot_rotate_bar(
+            ax, angle, 
+            width=(width/2), 
+            height=(width/2) * 0.2, 
+            x=width/2, y=width/2, 
+            linewidth=10)
     
     # ax.set_xlabel('x')
     # ax.set_ylabel('y')
@@ -85,7 +80,7 @@ def plot_single_2d_gaze(d2_gaze_pattern, settings, angle, ax, show_grating=True,
     ax.set_yticks([])
 
     if set_title:
-        ax.set_title(f'{angle:.0f}°', fontsize=AX_TITLE_SIZE*3)
+        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3)
 
 
 
@@ -151,4 +146,4 @@ def plot_single_1d_plot_vectors(d1_pattern, angle, ax, set_title=True):
     ax.set_aspect('equal')
 
     if set_title:
-        ax.set_title(f'{angle:.0f}°', fontsize=AX_TITLE_SIZE*3)
+        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3)

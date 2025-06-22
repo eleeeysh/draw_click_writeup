@@ -4,9 +4,32 @@ import numpy as np
 STIM1_COLOR = '#A96FAE'
 STIM2_COLOR = '#83B174'
 
+def set_general_plt_styles():
+    # set background of plots
+    plt.rcParams['figure.facecolor'] = 'none'
+    plt.rcParams['savefig.facecolor'] = 'none'
+
+    # set the font
+    plt.rcParams['font.family'] = 'Arial'
+
+    # set axis colors
+    axis_color = '#444444'
+    ## Set axis edge color to gray
+    plt.rcParams['axes.edgecolor'] = axis_color
+    plt.rcParams['xtick.color'] = axis_color
+    plt.rcParams['ytick.color'] = axis_color
+    plt.rcParams['axes.labelcolor'] = axis_color
+
+    # set axis title color
+    plt.rcParams['axes.titlecolor'] = axis_color
+
+    # make the axis line thicker
+    plt.rcParams['axes.linewidth'] = 1.2
+
 def annotate_time_line(ax, events, min_time=None, max_time=None,
         plot_ymin=None, plot_ymax=None, 
-        hide_ymin=None, hide_ymax=None):    
+        hide_ymin=None, hide_ymax=None,
+        to_simplify=False):    
     min_time = 0 if min_time is None else min_time
     max_time = max(events.values())+5000 if max_time is None else max_time
 
@@ -26,17 +49,31 @@ def annotate_time_line(ax, events, min_time=None, max_time=None,
     }
 
     plot_transform = plt.gca().get_xaxis_transform()
+
+    # drop some annotations if to_simplify is True
+    simplified_set = set([
+        's1 onset', 's2 onset',
+        's1 delay mask onset', 's2 delay mask onset',
+        'response'
+    ])
+    if to_simplify:
+        cue_name_to_annot_mappings['s1 delay mask onset'] = 'ISI'
+        cue_name_to_annot_mappings['s2 delay mask onset'] = 'Delay'
+        cue_name_to_annot_mappings['response'] = 'Response'
     
     # text annotation
     for time_name, time_point in events.items():
         if time_point < min_time or time_point > max_time:
             continue
 
+        if to_simplify and time_name not in simplified_set:
+            continue
+
         # replace the delay name
         time_name = cue_name_to_annot_mappings.get(time_name, time_name)
         
         # s1, s2, or response?
-        text_color = 'gray'
+        text_color = '#333333'
         if time_name.startswith('S1'):
             text_color = STIM1_COLOR
         if time_name.startswith('S2'):
@@ -62,12 +99,26 @@ def annotate_time_line(ax, events, min_time=None, max_time=None,
             )
 
         # add time point annotation text
-        annot_x, annot_y = time_point + 400, -0.02
-        if len(time_name) < 3:
-            annot_x = annot_x - 200
+        annot_x, annot_y = time_point, -0.02
+        text_rotate = 0
+        text_font_size = 18
+        text_ha, text_va = 'center', 'top'
+        if not to_simplify:
+            annot_x += 400
+            text_rotate = 30
+            text_font_size = 16
+            text_ha, text_va = 'right', 'top'
+            if len(time_name) < 3:
+                annot_x = annot_x - 200
+        else:
+            # move the last label a bit inward
+            if time_name == 'Response':
+                annot_x -= 400
         ax.text(
-            annot_x, annot_y, time_name, color=text_color, rotation=30, fontsize=16,
-            ha='right', va='top', transform=plot_transform,
+            annot_x, annot_y, time_name, 
+            color=text_color, rotation=text_rotate, 
+            fontsize=text_font_size,
+            ha=text_ha, va=text_va, transform=plot_transform,
         )
 
 
