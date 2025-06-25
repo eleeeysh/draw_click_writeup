@@ -542,26 +542,18 @@ def raw_display_shifted_distrib(
 
     # set the x axis
     if ref_type == 'previous':
-        ax.set_xticks([-60, 0, 60])
-        ax.set_xticklabels([
-            'away<<', 
-            'last resp',
-            '>>towards'], fontsize=tick_label_fontsize)
-        # ax.set_xlabel('error (corrected)', fontsize=label_fontsize)
+        ax.set_xlabel(r'Error ($r_{t-1}$ aligned)', fontsize=xlabel_fontsize)
     elif ref_type == 'nontarget':
-        ax.set_xticks([-60, 0, 60])
-        ax.set_xticklabels([
-            'away<<',
-            'non-target', 
-            '>>towards'], fontsize=tick_label_fontsize)
+        ax.set_xlabel('Error (non-target aligned)', fontsize=xlabel_fontsize)
         # ax.set_xlabel('error (corrected)', fontsize=label_fontsize)
     elif ref_type == 'target':
         ax.set_xlabel('Error', fontsize=xlabel_fontsize)
-        xticks = [-60, -30, 0, 30, 60]
-        ax.set_xticks(xticks)
-        ax.set_xticklabels(xticks, fontsize=tick_label_fontsize)
     else:
         raise  NotImplementedError(f'Unknown ref_type {ref_type}')
+
+    xticks = [-60, -30, 0, 30, 60]
+    ax.set_xticks(xticks)
+    ax.set_xticklabels(xticks, fontsize=tick_label_fontsize)
     
     # set the y axis
     ax.set_ylabel('Probability Density (× 10$^{-3}$)', fontsize=label_fontsize)

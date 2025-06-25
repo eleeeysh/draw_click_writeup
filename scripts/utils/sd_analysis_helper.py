@@ -86,9 +86,9 @@ def raw_display_stats_as_tuning_func_of_sd_diff_compact(
         fmt='o-', capsize=5, color=plot_color, label=label)
 
     ax.axhline(0, color='y', linestyle='--')
-    ax.set_xlabel('Last Resp - Current Stim', fontsize=16)
-    yname = 'Serial Bias' if stats_type == 'sd' else 'Evidence'
-    ax.set_ylabel(yname, fontsize=16)
+    ax.set_xlabel('Last Resp - Current Stim', fontsize=24)
+    yname = 'Bias' if stats_type == 'sd' else 'Evidence'
+    ax.set_ylabel(yname, fontsize=24)
     ymin, ymax = {
         'accuracy': (-0.1, 1.2),
         'sd': (-BIAS_MAG_MAX, BIAS_MAG_MAX)
@@ -100,8 +100,12 @@ def raw_display_stats_as_tuning_func_of_sd_diff_compact(
         'accuracy': (0.0, 1.0),
         'sd': (-BIAS_MARK_MAG_MAX, BIAS_MARK_MAG_MAX)
     }[stats_type]
-    ax.set_xticks(15 * (np.arange(5)+1))
-    ax.set_yticks(np.linspace(mark_ymin, mark_ymax, 3))
+    xticks = 15 * (np.arange(5)+1)
+    ax.set_xticks(xticks)
+    ax.set_xticklabels(xticks, fontsize=16)
+    yticks = np.linspace(mark_ymin, mark_ymax, 3)
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(yticks, fontsize=16)
 
     # mark the significance
     if (stats_type == 'sd') and mark_sig:
