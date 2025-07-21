@@ -326,6 +326,10 @@ RSA_PLOT_YTICKS = [0.0, 0.1,] # [-0.1, 0.0, 0.1, 0.2, 0.3]
 
 PERM_TEST_N = 1000
 
+
+""" helper for conditional RSA """
+from .stats_test import sem_func
+
 class ConditionalRSAFullHelper:
     def __init__(self, rsa_helper: RSAHelper, plot_time_steps, plot_window_size, permutation_level=0):
         self.rsa_helper = rsa_helper
@@ -465,7 +469,7 @@ class ConditionalRSAFullHelper:
             lmb, feature_mask, y_name, feature_dist_method, subjs)
         # plot the mean and sem
         mean_corr = np.mean(all_subj_corr, axis=0)
-        sem_corr = np.std(all_subj_corr, axis=0) / np.sqrt(len(all_subj_corr))
+        sem_corr = sem_func(all_subj_corr, axis=0)
         actual_time_points = display_time_steps
         ax.plot(
             actual_time_points, mean_corr, 

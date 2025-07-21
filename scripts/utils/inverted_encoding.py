@@ -482,6 +482,7 @@ def compress_center_align_distrib(distrib):
 
     return summed_xs, summed
 
+from .stats_test import sem_func
 
 def raw_display_shifted_distrib(
         ax, distrib, mask=None, label=None, ref_type=None,
@@ -515,7 +516,7 @@ def raw_display_shifted_distrib(
             subj_curves.append(subj_curve)
         # compute the mean and sem
         plot_ys = np.mean(subj_curves, axis=0)
-        plot_yerr = np.std(subj_curves, axis=0) / np.sqrt(len(subj_curves))
+        plot_yerr = sem_func(subj_curves, axis=0)
         # also the center line should be thin
         plot_params['linewidth'] = 5
     else:
@@ -789,7 +790,7 @@ def raw_display_stats_and_distrib(
             stats = np.array(list(stats.values()))
             stats = stats[~np.isnan(stats)]
             subj_mean = np.mean(stats)
-            subj_sem = np.std(stats) / np.sqrt(len(stats))
+            subj_sem = sem_func(stats, axis=None)
             # compute the tstats
             t_stat, p_val = scipy_stats.ttest_1samp(stats, 0)
             print_subj_mean, print_subj_sem = subj_mean, subj_sem
@@ -879,37 +880,7 @@ def print_stats_results_as_tables(stats_results):
         print(f'--- {stat_name} ---')
         print(stat_df)
 
-def stat_results_apply_ttest_2rel(stats_results, cond_names):
-    grouped = {}
-    assert len(cond_names) == 2
-    # regrouped
-    for cond_name in cond_names:
-        cond_stats = stats_results[cond_name]
-        for stat_type, subj_stats in cond_stats.items():
-            if stat_type not in grouped:
-                grouped[stat_type] = []
-            grouped[stat_type].append(subj_stats.copy())
-
-    # apply anova
-    ttest_results = {}
-    for stat_type, grouped_stats in grouped.items():
-        # only include shared subjects
-        shared_subjs = set.intersection(
-            *[set(subj_stats.keys()) for subj_stats in grouped_stats])
-        shared_subjs = list(shared_subjs)
-        filtered_subj_stats = [
-            [subj_stats[subj] for subj in shared_subjs] 
-            for subj_stats in grouped_stats]
-        # stat_t, stat_pval = scipy_stats.ttest_rel(*filtered_subj_stats)
-        stat_t, stat_pval = scipy_stats.wilcoxon(
-            np.array(filtered_subj_stats[0])-np.array(filtered_subj_stats[1]), 
-            alternative='two-sided')
-        ttest_results[stat_type] = {
-            't_stat': stat_t,
-            'p_val': stat_pval,
-        }
-
-    return ttest_results
+from .stats_test import stat_results_apply_ttest_2rel
 
 def display_ttest_rel2_results(stats_results, cond_names):
     ttest_results = stat_results_apply_ttest_2rel(stats_results, cond_names)
@@ -922,8 +893,7 @@ def display_ttest_rel2_results(stats_results, cond_names):
 def raw_within_across_phase_train_test(
         phases, train_test_lmb, subjs,
         train_test_iterator, model_params,
-        item_weights_lmb):
-    all_phase_steps = [0, 1]
+        item_weights_lmb, all_phase_steps=[0, 1]):
     n_train_phases = len(phases)
     phases_results = [[] for _ in all_phase_steps]
 
@@ -1108,3 +1078,241 @@ def generate_windows(phases, window_size, step_size):
         windows.append(window)
         window_idx += step_size
     return windows
+
+""" More simplified to examine mode difference in critical windows """
+def simplify_show_single_time_stats(
+        ax, collected_stats, cond_name, stat_name,
+        line_color, line_alpha, label=None):
+    # collect xs, ys, yerrs
+    ys = [
+        np.mean(list(ss[cond_name][stat_name].values())) 
+        for ss in collected_stats
+    ]
+    yerrs = [
+        sem_func(list(ss[cond_name][stat_name].values())) 
+        for ss in collected_stats
+    ]
+
+    # time steps
+    plot_xs = np.arange(len(collected_stats))
+
+    # plot it
+    ax.errorbar(
+        plot_xs, ys, yerrs, fmt='o-', 
+        linewidth=4, elinewidth=3, capsize=5,
+        label=label, color=line_color, alpha=line_alpha)
+    ax.set_xticks(plot_xs)
+
+def pairwise_time_compare(ax, collected_stats, 
+        stat_name, cond1, cond2, 
+        line_color, line_alpha, y_offset):
+    # collect xs, ys, yerrs
+    # apply wilcoxon test per time step
+    pvals = []
+    for t, ss in enumerate(collected_stats):
+        selected = {
+            cond1: {stat_name: ss[cond1][stat_name]},
+            cond2: {stat_name: ss[cond2][stat_name]},
+        }
+        t_results = stat_results_apply_ttest_2rel(
+            selected, [cond1, cond2],
+            use_wilcoxon=True, # too few subjects?
+        )[stat_name]
+        pvals.append(t_results['p_val'])
+    pvals = np.array(pvals)
+
+    # time steps
+    plot_xs = np.arange(len(collected_stats))
+    sig_mask = pvals < 0.05
+    if np.sum(sig_mask) > 0:
+        sig_xs = plot_xs[sig_mask]
+        sig_ys = np.ones(len(sig_xs)) * y_offset
+        ax.scatter(sig_xs, sig_ys, 
+            marker='o', s=100, 
+            color=line_color, alpha=line_alpha)
+
+def plot_sig_dots(ax, ts, pvals, line_color, line_alpha, y_offset):
+    # time steps
+    sig_mask = pvals < 0.05
+    if np.sum(sig_mask) > 0:
+        sig_xs = ts[sig_mask]
+        sig_ys = np.ones(len(sig_xs)) * y_offset
+        ax.scatter(sig_xs, sig_ys, 
+            marker='o', s=100, 
+            color=line_color, alpha=line_alpha)
+
+def pairwise_time_compare(ax, collected_stats, 
+        stat_name, cond1, cond2, 
+        line_color, line_alpha, y_offset):
+    # collect xs, ys, yerrs
+    # apply wilcoxon test per time step
+    pvals = []
+    for t, ss in enumerate(collected_stats):
+        selected = {
+            cond1: {stat_name: ss[cond1][stat_name]},
+            cond2: {stat_name: ss[cond2][stat_name]},
+        }
+        t_results = stat_results_apply_ttest_2rel(
+            selected, [cond1, cond2],
+            use_wilcoxon=True, # too few subjects?
+        )[stat_name]
+        pvals.append(t_results['p_val'])
+    pvals = np.array(pvals)
+
+    # time steps
+    plot_xs = np.arange(len(collected_stats))
+    plot_sig_dots(
+        ax, plot_xs, pvals, 
+        line_color=line_color, line_alpha=line_alpha, 
+        y_offset=y_offset)
+
+def show_significant_step_change(ax, collected_stats, stat_name, cond, 
+        line_color, line_alpha, y_offset, ref_start=False):
+    compare_ts = np.arange(1, len(collected_stats))
+    pvals = []
+    for t in compare_ts:
+        ref_start_id = 0 if ref_start else t-1
+        selected = {
+            str(ref_start_id): {stat_name: collected_stats[ref_start_id][cond][stat_name]},
+            str(t): {stat_name: collected_stats[t][cond][stat_name]},
+        }
+        t_results = stat_results_apply_ttest_2rel(
+            selected, [str(ref_start_id), str(t)],
+            use_wilcoxon=True, # too few subjects?
+        )[stat_name]
+        pvals.append(t_results['p_val'])
+    pvals = np.array(pvals)
+
+    plot_sig_dots(
+        ax, compare_ts, pvals, 
+        line_color=line_color, line_alpha=line_alpha, 
+        y_offset=y_offset)
+
+def plot_critical_phase_mode_difference(
+        time_stats, stat_type,
+        plot_w=8, plot_h=6,
+        mode_colors={},
+        cond_color_map={},
+        n_stim1_only=2,
+        show_sig_change=False,
+        sig_ref_first=True # each step, whether compared with the first time point or the preceding
+    ):
+    fig, ax = plt.subplots(1, figsize=(plot_w, plot_h))
+    if stat_type not in ['accuracy',]:
+        raise NotImplementedError
+
+    modes = ['draw', 'wheel']
+
+    # firstly show each of them
+    for mode in ['draw', 'wheel']:
+        simplify_show_single_time_stats(
+            ax, time_stats, cond_name=mode, stat_name=stat_type,
+            line_color=mode_colors[cond_color_map.get(mode, mode)],
+            line_alpha=1.0)
+
+    # then show the difference
+    sig_bar_y = {
+        'accuracy': 0.9
+    }[stat_type]
+    pairwise_time_compare(
+        ax, collected_stats=time_stats,
+        stat_name=stat_type, cond1='draw', cond2='wheel',
+        line_color='gray', line_alpha=0.5,
+        y_offset=sig_bar_y
+    )
+
+    # also show the significant change if necessary
+    mode_offsets = {
+        'draw': 0.05,
+        'wheel': -0.05,
+    }
+    if show_sig_change:
+        for mode, mode_y_offset in mode_offsets.items():
+            show_significant_step_change(
+                ax, time_stats, stat_name=stat_type, cond=mode,
+                line_color=mode_colors[cond_color_map.get(mode, mode)],
+                line_alpha=0.5, y_offset=mode_y_offset+sig_bar_y,
+                ref_start=sig_ref_first)
+
+    # format the plot
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ## plot the x label
+    ax.set_xlabel('Time', fontsize=22)
+    time_names = ['ISI', 'enc'][:n_stim1_only][::-1]
+    time_names += [
+        f'd{x+1}' for x in range(len(time_stats)-n_stim1_only)
+    ]
+    ax.set_xticklabels(time_names, fontsize=16, rotation=45)
+    ## plot the y label 
+    stat_ylabel = {
+        'accuracy': 'Evidence',
+        'sd': 'Bias',
+    }[stat_type]
+    ax.set_ylabel(stat_ylabel, fontsize=22)
+    yticks = {
+        'accuracy': [0, 0.4, 0.8],
+    }[stat_type]
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(yticks, fontsize=16)
+    yrange = {
+        'accuracy': [0, 1.0],
+    }[stat_type]
+    ax.set_ylim(yrange)
+
+    # mark critical windows
+    critical_times = [0.5, 1.5][:n_stim1_only]
+    for ct in critical_times:
+        ax.axvline(ct, color='gray', linestyle='--', alpha=0.3)
+
+def raw_ref_fixed_tested_all(
+        train_test_iterator,
+        model_params, 
+        n_subjects,
+        train_phase, test_phases, 
+        train_stims, test_stims, 
+        train_lmb, test_lmb, 
+        train_weight_lmb,
+        separate_mode=True):
+    test_results = []
+    test_phase_ids = np.arange(len(test_phases))
+    for test_phase_id in tqdm(test_phase_ids):
+        test_phase = test_phases[test_phase_id]
+
+        if separate_mode:
+            phase_results = {}
+            for mode in ['draw', 'click']:
+                # separate train test
+                ## set lambda
+                if train_lmb is None:
+                    train_lmb = lambda df: np.ones(len(df), dtype=bool)
+                if test_lmb is None:
+                    test_lmb = lambda df: np.ones(len(df), dtype=bool)
+                mode_train_lmb = lambda df: (train_lmb(df) & ((df['mode'] == mode).values))
+                mode_test_lmb = lambda df: (test_lmb(df) & ((df['mode'] == mode).values))
+                ## get results
+                phase_results[mode] = raw_cv_train_test_invert_encoding(
+                    iterator_func=train_test_iterator,
+                    model_params=model_params,
+                    phase1=train_phase, phase2=test_phase,
+                    phase1_stim_types=train_stims, phase2_stim_types=test_stims,
+                    phase1_lmb=mode_train_lmb, phase2_lmb=mode_test_lmb,
+                    item_weights_lmb=train_weight_lmb,
+                    kfold=n_subjects, use_tqdm=False
+                )
+
+        else:
+            phase_results = raw_cv_train_test_invert_encoding(
+                iterator_func=train_test_iterator,
+                model_params=model_params,
+                phase1=train_phase, phase2=test_phase,
+                phase1_stim_types=train_stims,
+                phase2_stim_types=test_stims,
+                phase1_lmb=train_lmb, phase2_lmb=test_lmb,
+                item_weights_lmb=train_weight_lmb,
+                kfold=n_subjects, use_tqdm=False
+            )
+
+        test_results.append(phase_results)
+    
+    return test_results
