@@ -63,9 +63,9 @@ def raw_display_stats_as_tuning_func_of_sd_diff(
 
 SD_PLOTS_LABEL_FONTSIZE = {
     'xtick': 22,
-    'ytick': 20,
+    'ytick': 22,
     'xaxis': 24,
-    'yaxis': 22,
+    'yaxis': 24,
 }
 
 def raw_display_stats_as_tuning_func_of_sd_diff_compact(
@@ -102,7 +102,8 @@ def raw_display_stats_as_tuning_func_of_sd_diff_compact(
     ax.set_xlabel(
         'Last Resp - Current Stim', 
         fontsize=xaxis_label_fontsize)
-    yname = r'Error ($r_{t-1}$ aligned, $\times 10^{-3}$)' if stats_type == 'sd' else 'Evidence'
+    # yname = r'Error ($r_{t-1}$ aligned, $\times 10^{-3}$)' if stats_type == 'sd' else 'Evidence'
+    yname = r'Bias towards $r_{t-1}$  ($x10^{-3}$)' if stats_type == 'sd' else 'Evidence'
     ax.set_ylabel(yname, fontsize=yaxis_label_fontsize)
     ymin, ymax = {
         'accuracy': (-0.1, 1.2),
