@@ -25,7 +25,7 @@ def plot_rotate_bar(ax, angle, width, height, x=0, y=0, linewidth=2):
 def plot_single_1d_gaze(d1_gaze_pattern, angle, ax, set_title=True):
     norm_values = d1_gaze_pattern / np.max(np.abs(d1_gaze_pattern))
     norm = mcolors.Normalize(vmin=-1, vmax=1)
-    cmap = cm.bwr
+    cmap = cm.cividis # cm.bwr
     n_bins = len(d1_gaze_pattern)
     angle_step = 360 / n_bins
     for i in range(n_bins):
@@ -55,7 +55,7 @@ def plot_single_2d_gaze(d2_gaze_pattern, settings, angle, ax, show_grating=True,
     norm_values = d2_gaze_pattern / np.max(np.abs(d2_gaze_pattern))
     # norm = mcolors.Normalize(vmin=-1, vmax=1)
     # cmap = cm.bwr
-    cmap = 'coolwarm'
+    cmap = 'cividis' # 'coolwarm'
 
     # reshape
     width = settings['2dhist']['vecmap']['n_bins']
@@ -80,7 +80,7 @@ def plot_single_2d_gaze(d2_gaze_pattern, settings, angle, ax, show_grating=True,
     ax.set_yticks([])
 
     if set_title:
-        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3)
+        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3.5)
 
 
 
