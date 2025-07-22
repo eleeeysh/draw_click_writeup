@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-BIAS_MAG_MAX = 0.02
+BIAS_MAG_MAX = 0.010
 BIAS_MARK_MAG_MAX = 0.01
 
 """ group trials by serial difference, and check bias gtoup by group """
@@ -61,10 +61,23 @@ def raw_display_stats_as_tuning_func_of_sd_diff(
 
     return all_cond_stats, plot_full_name
 
+SD_PLOTS_LABEL_FONTSIZE = {
+    'xtick': 22,
+    'ytick': 20,
+    'xaxis': 24,
+    'yaxis': 22,
+}
+
 def raw_display_stats_as_tuning_func_of_sd_diff_compact(
         ax, all_cond_stats, stats_type, plot_color=None, label=None, 
         mark_sig=True, mark_sig_offset=0.05, return_results=False,
         N_SD_BINS=6):
+
+    xtick_label_fontsize = SD_PLOTS_LABEL_FONTSIZE['xtick']
+    ytick_label_fontsize = SD_PLOTS_LABEL_FONTSIZE['ytick']
+    xaxis_label_fontsize = SD_PLOTS_LABEL_FONTSIZE['xaxis']
+    yaxis_label_fontsize = SD_PLOTS_LABEL_FONTSIZE['yaxis']
+
     plot_xs, plot_ys, plot_xerrs, plot_is_sig = [], [], [], []
     stat_name = {
         'accuracy': 'accuracy',
@@ -75,7 +88,7 @@ def raw_display_stats_as_tuning_func_of_sd_diff_compact(
         sd_m = all_cond_stats[i]['combined'][stat_name]['mean']
         sd_sem = all_cond_stats[i]['combined'][stat_name]['sem']
         sd_pval = all_cond_stats[i]['combined'][stat_name]['p_val']
-        print(sd_pval)
+        # print(sd_pval)
         plot_is_sig.append(sd_pval <= 0.05)
         plot_xs.append(sd_diff_deg)
         plot_ys.append(sd_m)
@@ -85,10 +98,12 @@ def raw_display_stats_as_tuning_func_of_sd_diff_compact(
         linewidth=4, elinewidth=2,
         fmt='o-', capsize=5, color=plot_color, label=label)
 
-    ax.axhline(0, color='y', linestyle='--')
-    ax.set_xlabel('Last Resp - Current Stim', fontsize=24)
-    yname = 'Bias' if stats_type == 'sd' else 'Evidence'
-    ax.set_ylabel(yname, fontsize=24)
+    ax.axhline(0, color='gray', linestyle='--')
+    ax.set_xlabel(
+        'Last Resp - Current Stim', 
+        fontsize=xaxis_label_fontsize)
+    yname = r'Error ($r_{t-1}$ aligned, $\times 10^{-3}$)' if stats_type == 'sd' else 'Evidence'
+    ax.set_ylabel(yname, fontsize=yaxis_label_fontsize)
     ymin, ymax = {
         'accuracy': (-0.1, 1.2),
         'sd': (-BIAS_MAG_MAX, BIAS_MAG_MAX)
@@ -96,16 +111,16 @@ def raw_display_stats_as_tuning_func_of_sd_diff_compact(
     ax.set_ylim(ymin, ymax)
 
     # make the label ticks sparse
-    mark_ymin, mark_ymax = {
-        'accuracy': (0.0, 1.0),
-        'sd': (-BIAS_MARK_MAG_MAX, BIAS_MARK_MAG_MAX)
+    yticks = {
+        'accuracy': np.arange(6) * 0.2,
+        'sd': np.linspace(-BIAS_MARK_MAG_MAX, BIAS_MARK_MAG_MAX, 5)
     }[stats_type]
     xticks = 15 * (np.arange(5)+1)
     ax.set_xticks(xticks)
-    ax.set_xticklabels(xticks, fontsize=16)
-    yticks = np.linspace(mark_ymin, mark_ymax, 3)
+    ax.set_xticklabels(xticks, fontsize=xtick_label_fontsize)
     ax.set_yticks(yticks)
-    ax.set_yticklabels(yticks, fontsize=16)
+    ytick_labels = [f'{int(np.round(ytick*1000))}' for ytick in yticks]
+    ax.set_yticklabels(ytick_labels, fontsize=ytick_label_fontsize)
 
     # mark the significance
     if (stats_type == 'sd') and mark_sig:

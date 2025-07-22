@@ -48,7 +48,7 @@ def plot_single_1d_gaze(d1_gaze_pattern, angle, ax, set_title=True):
     ax.set_aspect('equal')
 
     if set_title:
-        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3)
+        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3.5)
 
 def plot_single_2d_gaze(d2_gaze_pattern, settings, angle, ax, show_grating=True, set_title=True):
     # normalize
@@ -146,4 +146,4 @@ def plot_single_1d_plot_vectors(d1_pattern, angle, ax, set_title=True):
     ax.set_aspect('equal')
 
     if set_title:
-        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3)
+        ax.set_title(f'{angle:.1f}°', fontsize=AX_TITLE_SIZE*3.5)

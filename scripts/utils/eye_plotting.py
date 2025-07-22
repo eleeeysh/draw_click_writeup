@@ -59,7 +59,7 @@ def annotate_time_line(ax, events, min_time=None, max_time=None,
     if to_simplify:
         cue_name_to_annot_mappings['s1 delay mask onset'] = 'ISI'
         cue_name_to_annot_mappings['s2 delay mask onset'] = 'Delay'
-        cue_name_to_annot_mappings['response'] = 'Response'
+        cue_name_to_annot_mappings['response'] = 'Recall'
     
     # text annotation
     for time_name, time_point in events.items():

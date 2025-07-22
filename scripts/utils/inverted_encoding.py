@@ -490,7 +490,8 @@ def raw_display_shifted_distrib(
         plot_line_style='-',
         plot_line_color=None,
         plot_line_alpha=1,
-        subj_series=None):
+        subj_series=None, 
+        zoom_out=True):
     # masking
     if mask is not None:
         distrib = distrib[mask]
@@ -537,9 +538,9 @@ def raw_display_shifted_distrib(
     # mark the center
     ax.axvline(0, color='gray', linestyle='--', linewidth=3)
 
-    label_fontsize = 24
-    tick_label_fontsize = 22
-    xlabel_fontsize = label_fontsize +2
+    label_fontsize = 26 if zoom_out else 24
+    tick_label_fontsize = 28 if zoom_out else 22
+    xlabel_fontsize = label_fontsize + (8 if zoom_out else 2)
 
     # set the x axis
     if ref_type == 'previous':
@@ -681,6 +682,7 @@ def raw_display_stats_and_distrib(
         prediction_conversion_func=None, # channel_weights_to_pseudo_distrib
         display_shifted_distrib_func=None, # display_shifted_distrib
         show_legend=False, # not need to show legend
+        zoom_out=True, # just the ratio of label for plots
     ):
     y_pred_distrib = prediction_conversion_func(
         results['preds'],surrogate_model, sharpness=sharpness)
@@ -827,6 +829,7 @@ def raw_display_stats_and_distrib(
                 # label=f'{condname}:: {stats_str}', # display the full stats
                 ref_type=ref_type, 
                 subj_series=cond_subjs, # to display sem
+                zoom_out=zoom_out,
                 **plot_settings)
         
         # update stats

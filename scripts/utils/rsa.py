@@ -316,13 +316,13 @@ from scipy.stats import ttest_1samp
 from mne.stats import permutation_cluster_1samp_test
 
 EVENTS = generate_events()
-RSA_PLOT_SIZE = (10, 5)
+RSA_PLOT_SIZE = (9, 5)
 
 RSA_PLOT_YMIN = -0.065 # -0.15
-RSA_PLOT_YMAX = 0.21 # 0.35
+RSA_PLOT_YMAX = 0.16 # 0.35
 RSA_PLOT_YMIN_HIDDEN = -0.04 # -0.08
 RSA_PLOT_YMAX_HIDDEN = 0.18 # 0.3
-RSA_PLOT_YTICKS = [0.0, 0.1,] # [-0.1, 0.0, 0.1, 0.2, 0.3]
+RSA_PLOT_YTICKS = [0.0, 0.05, 0.1, 0.15] # [-0.1, 0.0, 0.1, 0.2, 0.3]
 
 PERM_TEST_N = 1000
 
@@ -496,7 +496,7 @@ class ConditionalRSAFullHelper:
     
     def display_lmb_dicts_rsa(self,
             ax, lmb_dicts, feature_mask, y_name, feature_dist_method, subjs, display_time_steps,
-            colors=None, alphas=None, linestyles=None, sig_yoffsets={}, show_legend=True, 
+            colors=None, alphas=None, linestyles=None, sig_yoffsets={}, show_legend=False, 
             comparison_sig_pairs=[], pairwise_sig_styles=[]):
         lmb_corr_stats = {}
         display_timepoints = None
@@ -548,7 +548,8 @@ class ConditionalRSAFullHelper:
         last_time_point = EVENTS['response']+500
         ax.set_ylim([RSA_PLOT_YMIN, RSA_PLOT_YMAX])
         ax.set_yticks(RSA_PLOT_YTICKS)
-        ax.set_yticklabels(RSA_PLOT_YTICKS, fontsize=16)
+        ytick_labels = [f'{y:.2f}' for y in RSA_PLOT_YTICKS]
+        ax.set_yticklabels(ytick_labels, fontsize=16)
         ax.hlines(0, last_time_point,0,linestyles='dashed',colors='black')
         ax.set_xlim(0, last_time_point) # tight
         if show_legend:

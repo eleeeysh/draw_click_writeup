@@ -33,7 +33,8 @@ def stat_results_apply_ttest_2rel(stats_results, cond_names, use_wilcoxon=True):
         if use_wilcoxon:
             # use wilcoxon test
             stat_t, stat_pval = scipy_stats.wilcoxon(
-                np.array(filtered_subj_stats[0])-np.array(filtered_subj_stats[1]), 
+                np.array(filtered_subj_stats[0]),
+                np.array(filtered_subj_stats[1]), 
                 alternative='two-sided')
         else:
             # use ttest
