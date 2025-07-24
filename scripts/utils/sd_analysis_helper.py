@@ -8,9 +8,12 @@ BIAS_MARK_MAG_MAX = 0.01
 def raw_display_stats_as_tuning_func_of_sd_diff(
         results, stats_type, common_lmb=None, plot_name='',
         return_subj_stats=False, N_SD_BINS=6,
-        item_weights_lmb=None, display_distrib_func=None):
+        item_weights_lmb=None, display_distrib_func=None,
+        to_display=True):
     
-    fig, axs = plt.subplots(1, N_SD_BINS, figsize=(9*N_SD_BINS, 9))
+    if to_display:
+        fig, axs = plt.subplots(1, N_SD_BINS, figsize=(9*N_SD_BINS, 9))
+    
     all_cond_stats = []
     for sd_bin_id in np.arange(N_SD_BINS):
         sd_bin_val = sd_bin_id / N_SD_BINS 
@@ -43,7 +46,7 @@ def raw_display_stats_as_tuning_func_of_sd_diff(
                 'lmb': None,
             }
         }
-        ax = axs[sd_bin_id]
+        ax = axs[sd_bin_id] if to_display else None
         cond_stats = display_distrib_func(ax,
             results,
             stats_type=stats_type, 
@@ -51,7 +54,9 @@ def raw_display_stats_as_tuning_func_of_sd_diff(
             item_weights_lmb=item_weights_lmb,
             return_subj_stats=return_subj_stats)
         all_cond_stats.append(cond_stats)
-        ax.set_title(f'sd-diff={sd_bin_id+1}', fontsize=16)
+        
+        if to_display:
+            ax.set_title(f'sd-diff={sd_bin_id+1}', fontsize=16)
 
     stat_short_name = {
         'accuracy': 'acc',
