@@ -671,7 +671,10 @@ DEFAULT_PLOT_LINE_SETTINGS = {
 }
 
 """ Finally, the most tedious to display the result and to collect stats """
-from scipy import stats as scipy_stats
+from .stats_test import (
+    stat_results_apply_ttest_1sample,
+    stat_results_apply_ttest_2rel,
+)
 def raw_display_stats_and_distrib(
         ax, # set to None to disable visualization
         results, stats_type, 
@@ -794,18 +797,20 @@ def raw_display_stats_and_distrib(
             subj_mean = np.mean(stats)
             subj_sem = sem_func(stats, axis=None)
             # compute the tstats
-            t_stat, p_val = scipy_stats.ttest_1samp(stats, 0)
+            tstat_result = stat_results_apply_ttest_1sample(stats)
             print_subj_mean, print_subj_sem = subj_mean, subj_sem
             if stat_name == 'bias': # for display - x100 for readability
                 print_subj_mean = subj_mean * 100
                 print_subj_sem = subj_sem * 100
+            p_val = tstat_result['p_val']
             stats_strs.append(f'{stat_name}: {print_subj_mean:.2f}\u00B1{print_subj_sem:.2f} (p={p_val:.3f})')
             stats_vals[stat_name] = {
                 'mean': subj_mean,
                 'sem': subj_sem,
-                't_stat': t_stat,
-                'p_val': p_val,
             }
+            for k in tstat_result:
+                stats_vals[stat_name][k] = tstat_result[k]
+    
         stats_str = ', '.join(stats_strs)
 
         # plot the distribution
@@ -883,15 +888,6 @@ def print_stats_results_as_tables(stats_results):
         print(f'--- {stat_name} ---')
         print(stat_df)
 
-from .stats_test import stat_results_apply_ttest_2rel
-
-def display_ttest_rel2_results(stats_results, cond_names):
-    ttest_results = stat_results_apply_ttest_2rel(stats_results, cond_names)
-    for cond_name in ttest_results:
-        cond_stats = ttest_results[cond_name]
-        print(f'{cond_name}: {cond_stats['t_stat']:.4f} (p={cond_stats['p_val']:.4f})')
-
-
 """ to plot the stats over time """
 def raw_within_across_phase_train_test(
         phases, train_test_lmb, subjs,
@@ -948,7 +944,6 @@ def anova_within_subject_test(collected_results, stat_name):
             g1, g2 = all_cond_names[i], all_cond_names[j]
             data1 = all_dfs[all_dfs['condition'] == g1]['metric']
             data2 = all_dfs[all_dfs['condition'] == g2]['metric']
-            # t_stat, p_val = scipy_stats.ttest_rel(data1, data2)
             t_stat, p_val = scipy_stats.wilcoxon(
                 np.array(data1)-np.array(data2), 
                 alternative='two-sided')
