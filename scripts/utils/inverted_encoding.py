@@ -804,9 +804,13 @@ def raw_display_stats_and_distrib(
                 print_subj_sem = subj_sem * 100
             p_val = tstat_result['p_val']
             stats_strs.append(f'{stat_name}: {print_subj_mean:.2f}\u00B1{print_subj_sem:.2f} (p={p_val:.3f})')
+            # participant stats
             stats_vals[stat_name] = {
                 'mean': subj_mean,
                 'sem': subj_sem,
+                'med': np.median(stats),
+                'lowq': np.percentile(stats, 25),
+                'highq': np.percentile(stats, 75),
             }
             for k in tstat_result:
                 stats_vals[stat_name][k] = tstat_result[k]
@@ -872,11 +876,11 @@ def print_stats_results_as_tables(stats_results):
     for stat_name, stat_df in tables.items():
         if stat_name == 'bias':
             # bias is too small need to make it larger
-            for col in ['mean', 'sem']:
+            for col in ['mean', 'sem', 'med', 'lowq', 'highq']:
                 stat_df[col] = stat_df[col] * 100
-            # Rename the column if not already renamed
-            new_col_name = f"{col} (1e-3)"
-            stat_df = stat_df.rename(columns={col: new_col_name})
+                # #Rename the column if not already renamed
+                # new_col_name = f"{col} (1e-3)"
+                # stat_df = stat_df.rename(columns={col: new_col_name})
 
         # then do the rounding
         for col in stat_df.columns:
